@@ -13,6 +13,7 @@ DiscreteDynamicsWorld::Initialize(Handle<Object> target) {
   constructor->InstanceTemplate()->SetInternalFieldCount(1);
   constructor->SetClassName(String::NewSymbol("DiscreteDynamicsWorld"));
   
+  NODE_SET_PROTOTYPE_METHOD(constructor, "getGravity", GetGravity);
   NODE_SET_PROTOTYPE_METHOD(constructor, "setGravity", SetGravity);
   NODE_SET_PROTOTYPE_METHOD(constructor, "addRigidBody", AddRigidBody);
   NODE_SET_PROTOTYPE_METHOD(constructor, "stepSimulation", StepSimulation);
@@ -47,17 +48,27 @@ DiscreteDynamicsWorld::New(const Arguments &args) {
 }
 
 Handle<Value>
+DiscreteDynamicsWorld::GetGravity(const Arguments &args) {
+  HandleScope scope;
+  
+  DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
+  btVector3 gravity = discreteDynamicsWorld->_btDiscreteDynamicsWorld->getGravity();
+  
+  Handle<Number> y = Number::New(gravity.getY());
+  
+  return scope.Close(y);
+}
+
+Handle<Value>
 DiscreteDynamicsWorld::SetGravity(const Arguments &args) {
   HandleScope scope;
   
-  // const btScalar x = ObjectWrap::Unwrap<btScalar>(args[0]->ToNumber());
-  // const btScalar y = ObjectWrap::Unwrap<btScalar>(args[1]->ToNumber());
-  // const btScalar z = ObjectWrap::Unwrap<btScalar>(args[2]->ToNumber());
-  
-  // btVector3 vector(, ObjectWrap::Unwrap<btScalar>(args[1]->ToNumber()), ObjectWrap::Unwrap<btScalar>(args[2]->ToNumber()));
+  double x = args[0]->ToNumber()->Value();
+  double y = args[1]->ToNumber()->Value();
+  double z = args[2]->ToNumber()->Value();
   
   DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
-  discreteDynamicsWorld->_btDiscreteDynamicsWorld->setGravity(btVector3(0, -10, 0));
+  discreteDynamicsWorld->_btDiscreteDynamicsWorld->setGravity(btVector3(x, y, z));
   
   return scope.Close(Undefined());
 }
@@ -80,18 +91,11 @@ Handle<Value>
 DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
   HandleScope scope;
   
+  double delta = args[0]->ToNumber()->Value();
+  
   DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 
-  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(100.0);
-  
-  // btCollisionObject* obj = discreteDynamicsWorld->_btDiscreteDynamicsWorld->getCollisionObjectArray()[0];
-  // btRigidBody* body = btRigidBody::upcast(obj);
-  // if (body && body->getMotionState())
-  // {
-  //   btTransform trans;
-  //   body->getMotionState()->getWorldTransform(trans);
-  //   printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
-  // }
+  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta);
   
   return scope.Close(Undefined());
 }
@@ -102,6 +106,6 @@ DiscreteDynamicsWorld::DiscreteDynamicsWorld(CollisionDispatcher* collisionDispa
 
 DiscreteDynamicsWorld::~DiscreteDynamicsWorld() {
   if (_btDiscreteDynamicsWorld) {
-    //delete _btDiscreteDynamicsWorld;
+    // delete _btDiscreteDynamicsWorld;
   }
 }

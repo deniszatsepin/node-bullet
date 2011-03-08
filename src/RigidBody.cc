@@ -28,7 +28,13 @@ RigidBody::New(const Arguments &args) {
 RigidBody::RigidBody(): ObjectWrap() {  
   btTransform transform;
   transform.setIdentity();
-  transform.setOrigin(btVector3((float)rand()/(float)RAND_MAX*1000.0, (float)rand()/(float)RAND_MAX*1000.0, (float)rand()/(float)RAND_MAX*1000.0));
+  transform.setOrigin(
+    btVector3(
+      (float)rand() / (float)RAND_MAX * 1000.0,
+      (float)rand() / (float)RAND_MAX * 1000.0,
+      (float)rand() / (float)RAND_MAX * 1000.0
+    )
+  );
   // tansform.setOrigin(btVector3(0.0, 0.0, 0.0));
   
   btScalar mass(1.0);
@@ -46,3 +52,16 @@ RigidBody::~RigidBody() {
     //delete _btRigidBody;
   }
 }
+
+Handle<Value>
+RigidBody::GetWorldTransform(const Arguments &args) {
+  HandleScope scope;
+  
+  btTransform transform;
+  _btRigidBody->getMotionState()->getWorldTransform(transform);
+  
+  // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
+  
+  return scope.Close(transform);
+}
+
