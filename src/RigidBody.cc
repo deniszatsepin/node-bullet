@@ -1,5 +1,7 @@
 #include "RigidBody.h"
 
+#include <iostream>
+
 Persistent<FunctionTemplate> RigidBody::constructor;
 
 void
@@ -9,6 +11,8 @@ RigidBody::Initialize(Handle<Object> target) {
   constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(RigidBody::New));
   constructor->InstanceTemplate()->SetInternalFieldCount(1);
   constructor->SetClassName(String::NewSymbol("RigidBody"));
+  
+  NODE_SET_PROTOTYPE_METHOD(constructor, "getWorldTransform", GetWorldTransform);
 
   Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
 
@@ -28,22 +32,17 @@ RigidBody::New(const Arguments &args) {
 RigidBody::RigidBody(): ObjectWrap() {  
   btTransform transform;
   transform.setIdentity();
-  transform.setOrigin(
-    btVector3(
-      (float)rand() / (float)RAND_MAX * 1000.0,
-      (float)rand() / (float)RAND_MAX * 1000.0,
-      (float)rand() / (float)RAND_MAX * 1000.0
-    )
-  );
-  // tansform.setOrigin(btVector3(0.0, 0.0, 0.0));
+  transform.setOrigin(btVector3(0.0, 0.0, 0.0));
   
   btScalar mass(1.0);
+  
   btVector3 localInertia(0, 0, 0);
   
   btDefaultMotionState* defaultMotionState = new btDefaultMotionState(transform);
-  btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(1.0), btScalar(1.0), btScalar(1.0)));
-  groundShape->calculateLocalInertia(mass, localInertia);
-  btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, defaultMotionState, groundShape, localInertia);
+  
+  btCollisionShape* collisionShape = new btBoxShape(btVector3(btScalar(1.0), btScalar(1.0), btScalar(1.0)));
+  collisionShape->calculateLocalInertia(mass, localInertia);
+  btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, defaultMotionState, collisionShape, localInertia);
   _btRigidBody = new btRigidBody(rbInfo);
 }
 
@@ -57,11 +56,16 @@ Handle<Value>
 RigidBody::GetWorldTransform(const Arguments &args) {
   HandleScope scope;
   
+  RigidBody* body = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
   btTransform transform;
-  _btRigidBody->getMotionState()->getWorldTransform(transform);
+  body->_btRigidBody->getMotionState()->getWorldTransform(transform);
   
-  // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
+  transform.setOrigin(btVector3(0.0, 0.0, 0.0));
   
-  return scope.Close(transform);
+  Handle<Number> x = Number::New(transform.getOrigin().getX());
+  
+  printf("%f", transform.getOrigin().x());
+  
+  return scope.Close(x);
 }
-

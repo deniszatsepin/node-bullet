@@ -26,9 +26,9 @@ discreteDynamicsWorld.setGravity()
 # # transform = new Bullet.Transform
 # # console.log 'transform', transform
 
-for i in [0...1]
-  rigidBody = new Bullet.RigidBody
-  console.log 'rigidBody', rigidBody
+# for i in [0...1]
+rigidBody = new Bullet.RigidBody
+console.log 'rigidBody', rigidBody
 
 discreteDynamicsWorld.addRigidBody rigidBody
 
@@ -36,13 +36,14 @@ fps = 0
 
 tick = ->
   fps++
-  discreteDynamicsWorld.stepSimulation()
-  process.nextTick tick
+  discreteDynamicsWorld.stepSimulation 1000 / 60
+  # rigidBody.getWorldTransform()
+  # process.nextTick tick
 
 process.nextTick ->
   tick()
 
 setInterval(->
   console.log fps
-  # fps = 0
+  fps = 0
 , 1000)

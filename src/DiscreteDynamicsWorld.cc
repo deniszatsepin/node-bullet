@@ -95,7 +95,25 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
   
   DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 
-  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta);
+  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(100.0f);
+  
+  btCollisionObject* obj = discreteDynamicsWorld->_btDiscreteDynamicsWorld->getCollisionObjectArray()[0];
+    btRigidBody* body = btRigidBody::upcast(obj);
+    if (body && body->getMotionState())
+    {
+      btTransform trans;
+      body->getMotionState()->getWorldTransform(trans);
+      printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
+    }
+    
+    obj = discreteDynamicsWorld->_btDiscreteDynamicsWorld->getCollisionObjectArray()[1];
+    body = btRigidBody::upcast(obj);
+    if (body && body->getMotionState())
+    {
+      btTransform trans;
+      body->getMotionState()->getWorldTransform(trans);
+      printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
+    }
   
   return scope.Close(Undefined());
 }
