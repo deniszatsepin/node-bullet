@@ -27,13 +27,16 @@ discreteDynamicsWorld.setGravity 0, -10, 0
 # # console.log 'transform', transform
 
 rigidBody = new Bullet.RigidBody
-rigidBody = new Bullet.RigidBody
-rigidBody = new Bullet.RigidBody
-rigidBody = new Bullet.RigidBody
-rigidBody = new Bullet.RigidBody
 console.log 'rigidBody', rigidBody
-
 discreteDynamicsWorld.addRigidBody rigidBody
+
+rigidBody2 = new Bullet.RigidBody
+console.log 'rigidBody', rigidBody2
+discreteDynamicsWorld.addRigidBody rigidBody2
+
+rigidBody3 = new Bullet.RigidBody
+console.log 'rigidBody', rigidBody3
+discreteDynamicsWorld.addRigidBody rigidBody3
 
 fps = 0
 

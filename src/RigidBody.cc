@@ -48,51 +48,11 @@ RigidBody::~RigidBody() {
   }
 }
 
-// Handle<Value> GetX(Local<String> property, const AccessorInfo &info) {
-//   Local<Object> self = info.Holder();
-//   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-//   void* ptr = wrap->Value();
-//   int value = static_cast<Point*>(ptr)->x_;
-//   return Integer::New(value);
-// }
-// 
-// void SetX(Local<String> property, Local<Value> value, const AccessorInfo& info) {
-//   Local<Object> self = info.Holder();
-//   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-//   void* ptr = wrap->Value();
-//   static_cast<Point*>(ptr)->x_ = value->Int32Value();
-// }
-
 Handle<Value>
 RigidBody::GetWorldTransform(const Arguments &args) {
   HandleScope scope;
   
-  // btTransform transform;
-  // _btRigidBody->getMotionState()->getWorldTransform(transform);
-  
-  // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
-  
-  //print positions of all objects
-  
   RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
-  
-  float x, y, z = 0;
-  
-  // for (int j = rigidBody->_btDiscreteDynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--) {
-  //   btCollisionObject* obj = rigidBody->_btDiscreteDynamicsWorld->getCollisionObjectArray()[j];
-  //   btRigidBody* body = btRigidBody::upcast(obj);
-  //   if (body && body->getMotionState()) {
-  //     btTransform trans;
-  //     body->getMotionState()->getWorldTransform(trans);
-  //     x = float(trans.getOrigin().getX());
-  //     y = float(trans.getOrigin().getY());
-  //     z = float(trans.getOrigin().getZ());
-  //     
-  //     // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
-  //     // Handle<Number> y = Number::New(trans.getOrigin().getY());
-  //     // return scope.Close(y);
-  //   }
-  // }
   
   btTransform transform;
   rigidBody->_btRigidBody->getMotionState()->getWorldTransform(transform);
@@ -101,7 +61,7 @@ RigidBody::GetWorldTransform(const Arguments &args) {
   Handle<Object> o = Object::New();
   Handle<Number> x_handle = Number::New(origin.getX());
   Handle<Number> y_handle = Number::New(origin.getY());
-  Handle<Number> z_handle = Number::New(z);
+  Handle<Number> z_handle = Number::New(origin.getY());
   o->Set(String::New("x"), x_handle);
   o->Set(String::New("y"), y_handle);
   o->Set(String::New("z"), z_handle);
