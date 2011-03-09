@@ -10,7 +10,8 @@ RigidBody::Initialize(Handle<Object> target) {
   constructor->InstanceTemplate()->SetInternalFieldCount(1);
   constructor->SetClassName(String::NewSymbol("RigidBody"));
   
-  NODE_SET_PROTOTYPE_METHOD(constructor, "getWorldTransform", GetWorldTransform);
+  NODE_SET_PROTOTYPE_METHOD(constructor, "getPosition", GetPosition);
+  NODE_SET_PROTOTYPE_METHOD(constructor, "setPosition", SetPosition);
 
   Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
 
@@ -49,7 +50,7 @@ RigidBody::~RigidBody() {
 }
 
 Handle<Value>
-RigidBody::GetWorldTransform(const Arguments &args) {
+RigidBody::GetPosition(const Arguments &args) {
   HandleScope scope;
   
   RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
@@ -61,9 +62,27 @@ RigidBody::GetWorldTransform(const Arguments &args) {
   Handle<Object> o = Object::New();
   Handle<Number> x_handle = Number::New(origin.getX());
   Handle<Number> y_handle = Number::New(origin.getY());
-  Handle<Number> z_handle = Number::New(origin.getY());
+  Handle<Number> z_handle = Number::New(origin.getZ());
   o->Set(String::New("x"), x_handle);
   o->Set(String::New("y"), y_handle);
   o->Set(String::New("z"), z_handle);
   return scope.Close(o);
+}
+
+Handle<Value>
+RigidBody::SetPosition(const Arguments &args) {
+  HandleScope scope;
+  
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
+  double x = args[0]->ToNumber()->Value();
+  double y = args[1]->ToNumber()->Value();
+  double z = args[2]->ToNumber()->Value();
+  
+  btTransform transform;
+  rigidBody->_btRigidBody->getMotionState()->getWorldTransform(transform);
+  // btVector3 origin = transform.getOrigin();
+  transform.setOrigin(btVector3(x, y, z));
+  rigidBody->_btRigidBody->setWorldTransform(transform);
+  return scope.Close(Undefined());
 }

@@ -26,7 +26,8 @@ class RigidBody: public node::ObjectWrap {
     btRigidBody* _btRigidBody;
     btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
     
-    static Handle<Value> GetWorldTransform(const Arguments &args);
+    static Handle<Value> GetPosition(const Arguments &args);
+    static Handle<Value> SetPosition(const Arguments &args);
     
   private:
     ~RigidBody();

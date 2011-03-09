@@ -30,27 +30,28 @@ rigidBody = new Bullet.RigidBody
 console.log 'rigidBody', rigidBody
 discreteDynamicsWorld.addRigidBody rigidBody
 
-rigidBody2 = new Bullet.RigidBody
-console.log 'rigidBody', rigidBody2
-discreteDynamicsWorld.addRigidBody rigidBody2
-
-rigidBody3 = new Bullet.RigidBody
-console.log 'rigidBody', rigidBody3
-discreteDynamicsWorld.addRigidBody rigidBody3
+# rigidBody2 = new Bullet.RigidBody
+# console.log 'rigidBody', rigidBody2
+# discreteDynamicsWorld.addRigidBody rigidBody2
+# 
+# rigidBody3 = new Bullet.RigidBody
+# console.log 'rigidBody', rigidBody3
+# discreteDynamicsWorld.addRigidBody rigidBody3
 
 fps = 0
 
 tick = ->
   fps++
   discreteDynamicsWorld.stepSimulation 1 / 60
-  console.dir rigidBody.getWorldTransform()
+  position = rigidBody.getPosition()
+  # rigidBody.setPosition 0, position.y, 0
   process.nextTick tick
+  
+  console.log position
 
-# process.nextTick ->
-# tick()
-setInterval tick, 1000 / 60
+setInterval tick, 1000 / 10
 
-setInterval(->
-  console.log fps
-  # fps = 0
-, 1000)
+# setInterval(->
+#   console.log fps
+#   # fps = 0
+# , 1000)
