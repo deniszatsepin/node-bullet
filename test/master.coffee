@@ -18,7 +18,7 @@ console.log 'sequentialImpulseConstraintSolver', sequentialImpulseConstraintSolv
 discreteDynamicsWorld = new Bullet.DiscreteDynamicsWorld collisionDispatcher, dbvtBroadphase, sequentialImpulseConstraintSolver, defaultCollisionConfiguration
 console.log 'discreteDynamicsWorld', discreteDynamicsWorld
 
-discreteDynamicsWorld.setGravity 0, -10, 0
+discreteDynamicsWorld.setGravity 0, -9.81, 0
 
 # # boxShape = new Bullet.BoxShape
 # # console.log 'boxShape', boxShape
@@ -26,32 +26,44 @@ discreteDynamicsWorld.setGravity 0, -10, 0
 # # transform = new Bullet.Transform
 # # console.log 'transform', transform
 
-rigidBody = new Bullet.RigidBody
-console.log 'rigidBody', rigidBody
-discreteDynamicsWorld.addRigidBody rigidBody
+world = new Object
 
-# rigidBody2 = new Bullet.RigidBody
-# console.log 'rigidBody', rigidBody2
-# discreteDynamicsWorld.addRigidBody rigidBody2
-# 
-# rigidBody3 = new Bullet.RigidBody
-# console.log 'rigidBody', rigidBody3
-# discreteDynamicsWorld.addRigidBody rigidBody3
+for i in [0...16]
+  for j in [0...16]
+    block = new Bullet.RigidBody 0
+    discreteDynamicsWorld.addRigidBody block
+    block.setPosition i * 2, 0, j * 2
+    # block.setGravity 0, 0, 0
+    
+    world["#{i}:#{j}"] = block
 
-fps = 0
+b = new Bullet.RigidBody 1
+discreteDynamicsWorld.addRigidBody b
+b.setPosition 0, 10, 0
+# b.setGravity 0, -9.81, 0
 
 tick = ->
-  fps++
-  discreteDynamicsWorld.stepSimulation 1 / 60
-  position = rigidBody.getPosition()
-  # rigidBody.setPosition 0, position.y, 0
-  process.nextTick tick
+  # fps++
+  discreteDynamicsWorld.stepSimulation 1 / 120
   
-  console.log position
+  # output = ''
+  
+  # for i in [0...16]
+  #   for j in [0...16]
+  #     block = world["#{i}:#{j}"]
+  #     
+  #     position = block.getPosition()
+  #     
+  #     block.setPosition position.x, 0, position.y
+  #     
+  #     output += ' ' + position.y
+  #   output += '\n'
+  # 
+  # console.log output
+  
+  position = b.getPosition()
+  console.dir position
+  
+  b.applyCentralImpulse 0, 0.05, 0.05
 
-setInterval tick, 1000 / 10
-
-# setInterval(->
-#   console.log fps
-#   # fps = 0
-# , 1000)
+setInterval tick, 1000 / 120

@@ -83,8 +83,6 @@ DiscreteDynamicsWorld::AddRigidBody(const Arguments &args) {
   
   discreteDynamicsWorld->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
   
-  rigidBody->_btDiscreteDynamicsWorld = discreteDynamicsWorld->_btDiscreteDynamicsWorld;
-  
   return scope.Close(Undefined());
 }
 
@@ -96,7 +94,7 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
   
   DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 
-  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(1.0f / 20.0f);
+  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta);
   
   return scope.Close(Undefined());
 }

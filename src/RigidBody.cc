@@ -12,9 +12,16 @@ RigidBody::Initialize(Handle<Object> target) {
   
   NODE_SET_PROTOTYPE_METHOD(constructor, "getPosition", GetPosition);
   NODE_SET_PROTOTYPE_METHOD(constructor, "setPosition", SetPosition);
-
+  
+  NODE_SET_PROTOTYPE_METHOD(constructor, "setLinearVelocity", SetLinearVelocity);
+  
+  NODE_SET_PROTOTYPE_METHOD(constructor, "setGravity", SetGravity);
+  
+  NODE_SET_PROTOTYPE_METHOD(constructor, "applyImpulse", ApplyImpulse);
+  NODE_SET_PROTOTYPE_METHOD(constructor, "applyCentralImpulse", ApplyCentralImpulse);
+  
   Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
+  
   target->Set(String::NewSymbol("RigidBody"), constructor->GetFunction());
 }
 
@@ -22,18 +29,18 @@ Handle<Value>
 RigidBody::New(const Arguments &args) {
   HandleScope scope;
   
-  RigidBody* rigidBody = new RigidBody();
+  RigidBody* rigidBody = new RigidBody(args[0]->ToNumber()->Value());
   rigidBody->Wrap(args.This());
   
   return scope.Close(args.This());
 }
 
-RigidBody::RigidBody(): ObjectWrap() {  
+RigidBody::RigidBody(double a_mass): ObjectWrap() {  
   btTransform transform;
   transform.setIdentity();
   transform.setOrigin(btVector3(0.0, 0.0, 0.0));
   
-  btScalar mass(1.0);
+  btScalar mass(a_mass);
   btVector3 localInertia(0, 0, 0);
   
   btDefaultMotionState* defaultMotionState = new btDefaultMotionState(transform);
@@ -81,8 +88,81 @@ RigidBody::SetPosition(const Arguments &args) {
   
   btTransform transform;
   rigidBody->_btRigidBody->getMotionState()->getWorldTransform(transform);
-  // btVector3 origin = transform.getOrigin();
   transform.setOrigin(btVector3(x, y, z));
   rigidBody->_btRigidBody->setWorldTransform(transform);
+  return scope.Close(Undefined());
+}
+
+Handle<Value>
+RigidBody::SetLinearVelocity(const Arguments &args) {
+  HandleScope scope;
+  
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
+  double x = args[0]->ToNumber()->Value();
+  double y = args[1]->ToNumber()->Value();
+  double z = args[2]->ToNumber()->Value();
+  
+  rigidBody->_btRigidBody->setLinearVelocity(btVector3(x, y, z));
+  return scope.Close(Undefined());
+}
+
+Handle<Value>
+RigidBody::SetMass(const Arguments &args) {
+  HandleScope scope;
+  
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
+  double mass = args[0]->ToNumber()->Value();
+  
+  // rigidBody->_btRigidBody->setMass(mass);
+  return scope.Close(Undefined());
+}
+
+Handle<Value>
+RigidBody::SetGravity(const Arguments &args) {
+  HandleScope scope;
+  
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
+  double gravity_x = args[0]->ToNumber()->Value();
+  double gravity_y = args[1]->ToNumber()->Value();
+  double gravity_z = args[2]->ToNumber()->Value();
+  
+  rigidBody->_btRigidBody->setGravity(btVector3(gravity_x, gravity_y, gravity_z));
+  return scope.Close(Undefined());
+}
+
+Handle<Value>
+RigidBody::ApplyCentralImpulse(const Arguments &args) {
+  HandleScope scope;
+  
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
+  double x = args[0]->ToNumber()->Value();
+  double y = args[1]->ToNumber()->Value();
+  double z = args[2]->ToNumber()->Value();
+  
+  rigidBody->_btRigidBody->applyCentralImpulse(btVector3(x, y, z));
+  
+  return scope.Close(Undefined());
+}
+
+Handle<Value>
+RigidBody::ApplyImpulse(const Arguments &args) {
+  HandleScope scope;
+  
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
+  
+  double px = args[0]->ToNumber()->Value();
+  double py = args[1]->ToNumber()->Value();
+  double pz = args[2]->ToNumber()->Value();
+  
+  double ix = args[3]->ToNumber()->Value();
+  double iy = args[4]->ToNumber()->Value();
+  double iz = args[5]->ToNumber()->Value();
+  
+  rigidBody->_btRigidBody->applyImpulse(btVector3(px, py, pz), btVector3(ix, iy, iz));
+  
   return scope.Close(Undefined());
 }
