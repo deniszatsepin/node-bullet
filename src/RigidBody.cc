@@ -84,15 +84,19 @@ RigidBody::GetWorldTransform(const Arguments &args) {
     if (body && body->getMotionState()) {
       btTransform trans;
       body->getMotionState()->getWorldTransform(trans);
-      printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
+      x = float(trans.getOrigin().getX());
+      y = float(trans.getOrigin().getY());
+      z = float(trans.getOrigin().getZ());
+      
+      // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
       // Handle<Number> y = Number::New(trans.getOrigin().getY());
       // return scope.Close(y);
     }
   }
   Handle<Object> o = Object::New();
-  Handle<Number> x_handle = Number::New(100);
-  Handle<Number> y_handle = Number::New(150);
-  Handle<Number> z_handle = Number::New(200);
+  Handle<Number> x_handle = Number::New(x);
+  Handle<Number> y_handle = Number::New(y);
+  Handle<Number> z_handle = Number::New(z);
   o->Set(String::New("x"), x_handle);
   o->Set(String::New("y"), y_handle);
   o->Set(String::New("z"), z_handle);
