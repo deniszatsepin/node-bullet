@@ -79,10 +79,11 @@ DiscreteDynamicsWorld::AddRigidBody(const Arguments &args) {
   
   DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
   
-  Local<Object> rigidBodyHandle = args[0]->ToObject();
-  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(rigidBodyHandle);
+  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args[0]->ToObject());
   
   discreteDynamicsWorld->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
+  
+  rigidBody->_btDiscreteDynamicsWorld = discreteDynamicsWorld->_btDiscreteDynamicsWorld;
   
   return scope.Close(Undefined());
 }
@@ -95,7 +96,7 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
   
   DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 
-  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta);
+  discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(1.0f/60.0f);
   
   return scope.Close(Undefined());
 }

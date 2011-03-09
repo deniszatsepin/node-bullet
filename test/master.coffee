@@ -18,7 +18,7 @@ console.log 'sequentialImpulseConstraintSolver', sequentialImpulseConstraintSolv
 discreteDynamicsWorld = new Bullet.DiscreteDynamicsWorld collisionDispatcher, dbvtBroadphase, sequentialImpulseConstraintSolver, defaultCollisionConfiguration
 console.log 'discreteDynamicsWorld', discreteDynamicsWorld
 
-discreteDynamicsWorld.setGravity()
+discreteDynamicsWorld.setGravity 0, -10, 0
 
 # # boxShape = new Bullet.BoxShape
 # # console.log 'boxShape', boxShape
@@ -26,9 +26,12 @@ discreteDynamicsWorld.setGravity()
 # # transform = new Bullet.Transform
 # # console.log 'transform', transform
 
-for i in [0...1]
-  rigidBody = new Bullet.RigidBody
-  console.log 'rigidBody', rigidBody
+rigidBody = new Bullet.RigidBody
+rigidBody = new Bullet.RigidBody
+rigidBody = new Bullet.RigidBody
+rigidBody = new Bullet.RigidBody
+rigidBody = new Bullet.RigidBody
+console.log 'rigidBody', rigidBody
 
 discreteDynamicsWorld.addRigidBody rigidBody
 
@@ -36,11 +39,13 @@ fps = 0
 
 tick = ->
   fps++
-  discreteDynamicsWorld.stepSimulation()
+  discreteDynamicsWorld.stepSimulation 1 / 60
+  console.dir rigidBody.getWorldTransform()
   process.nextTick tick
 
-process.nextTick ->
-  tick()
+# process.nextTick ->
+# tick()
+setInterval tick, 1000 / 60
 
 setInterval(->
   console.log fps

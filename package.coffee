@@ -26,8 +26,8 @@ bugs:
 directories:
   lib: './lib'
   doc: './doc'
-  
-main: './lib/bullet.coffee'
+
+main: './index.coffee'
 
 dependencies:
   'coffee-script': '>= 1.0.1'

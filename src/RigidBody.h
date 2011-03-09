@@ -7,6 +7,10 @@
 
 #include "btBulletDynamicsCommon.h"
 
+class DiscreteDynamicsWorld;
+
+// #include "DiscreteDynamicsWorld.h"
+
 using namespace v8;
 using namespace node;
 
@@ -20,6 +24,7 @@ class RigidBody: public node::ObjectWrap {
     RigidBody();
 
     btRigidBody* _btRigidBody;
+    btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
     
     static Handle<Value> GetWorldTransform(const Arguments &args);
     
