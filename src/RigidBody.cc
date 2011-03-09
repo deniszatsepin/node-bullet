@@ -48,6 +48,21 @@ RigidBody::~RigidBody() {
   }
 }
 
+// Handle<Value> GetX(Local<String> property, const AccessorInfo &info) {
+//   Local<Object> self = info.Holder();
+//   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+//   void* ptr = wrap->Value();
+//   int value = static_cast<Point*>(ptr)->x_;
+//   return Integer::New(value);
+// }
+// 
+// void SetX(Local<String> property, Local<Value> value, const AccessorInfo& info) {
+//   Local<Object> self = info.Holder();
+//   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
+//   void* ptr = wrap->Value();
+//   static_cast<Point*>(ptr)->x_ = value->Int32Value();
+// }
+
 Handle<Value>
 RigidBody::GetWorldTransform(const Arguments &args) {
   HandleScope scope;
@@ -74,7 +89,12 @@ RigidBody::GetWorldTransform(const Arguments &args) {
       // return scope.Close(y);
     }
   }
-  Handle<Number> xx = Number::New(x);
-  return scope.Close(xx);
+  Handle<Object> o = Object::New();
+  Handle<Number> x_handle = Number::New(100);
+  Handle<Number> y_handle = Number::New(150);
+  Handle<Number> z_handle = Number::New(200);
+  o->Set(String::New("x"), x_handle);
+  o->Set(String::New("y"), y_handle);
+  o->Set(String::New("z"), z_handle);
+  return scope.Close(o);
 }
-
