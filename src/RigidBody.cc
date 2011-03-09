@@ -78,24 +78,29 @@ RigidBody::GetWorldTransform(const Arguments &args) {
   
   float x, y, z = 0;
   
-  for (int j = rigidBody->_btDiscreteDynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--) {
-    btCollisionObject* obj = rigidBody->_btDiscreteDynamicsWorld->getCollisionObjectArray()[j];
-    btRigidBody* body = btRigidBody::upcast(obj);
-    if (body && body->getMotionState()) {
-      btTransform trans;
-      body->getMotionState()->getWorldTransform(trans);
-      x = float(trans.getOrigin().getX());
-      y = float(trans.getOrigin().getY());
-      z = float(trans.getOrigin().getZ());
-      
-      // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
-      // Handle<Number> y = Number::New(trans.getOrigin().getY());
-      // return scope.Close(y);
-    }
-  }
+  // for (int j = rigidBody->_btDiscreteDynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--) {
+  //   btCollisionObject* obj = rigidBody->_btDiscreteDynamicsWorld->getCollisionObjectArray()[j];
+  //   btRigidBody* body = btRigidBody::upcast(obj);
+  //   if (body && body->getMotionState()) {
+  //     btTransform trans;
+  //     body->getMotionState()->getWorldTransform(trans);
+  //     x = float(trans.getOrigin().getX());
+  //     y = float(trans.getOrigin().getY());
+  //     z = float(trans.getOrigin().getZ());
+  //     
+  //     // printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
+  //     // Handle<Number> y = Number::New(trans.getOrigin().getY());
+  //     // return scope.Close(y);
+  //   }
+  // }
+  
+  btTransform transform;
+  rigidBody->_btRigidBody->getMotionState()->getWorldTransform(transform);
+  btVector3 origin = transform.getOrigin();
+  
   Handle<Object> o = Object::New();
-  Handle<Number> x_handle = Number::New(x);
-  Handle<Number> y_handle = Number::New(y);
+  Handle<Number> x_handle = Number::New(origin.getX());
+  Handle<Number> y_handle = Number::New(origin.getY());
   Handle<Number> z_handle = Number::New(z);
   o->Set(String::New("x"), x_handle);
   o->Set(String::New("y"), y_handle);
