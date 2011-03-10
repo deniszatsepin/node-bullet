@@ -44,7 +44,7 @@ RigidBody::RigidBody(double a_mass): ObjectWrap() {
   btVector3 localInertia(0, 0, 0);
   
   btDefaultMotionState* defaultMotionState = new btDefaultMotionState(transform);
-  btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(1.0), btScalar(1.0), btScalar(1.0)));
+  btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(2.0), btScalar(2.0), btScalar(2.0)));
   groundShape->calculateLocalInertia(mass, localInertia);
   btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, defaultMotionState, groundShape, localInertia);
   _btRigidBody = new btRigidBody(rbInfo);
@@ -108,28 +108,16 @@ RigidBody::SetLinearVelocity(const Arguments &args) {
 }
 
 Handle<Value>
-RigidBody::SetMass(const Arguments &args) {
-  HandleScope scope;
-  
-  RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
-  
-  double mass = args[0]->ToNumber()->Value();
-  
-  // rigidBody->_btRigidBody->setMass(mass);
-  return scope.Close(Undefined());
-}
-
-Handle<Value>
 RigidBody::SetGravity(const Arguments &args) {
   HandleScope scope;
   
   RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
   
-  double gravity_x = args[0]->ToNumber()->Value();
-  double gravity_y = args[1]->ToNumber()->Value();
-  double gravity_z = args[2]->ToNumber()->Value();
+  double x = args[0]->ToNumber()->Value();
+  double y = args[1]->ToNumber()->Value();
+  double z = args[2]->ToNumber()->Value();
   
-  rigidBody->_btRigidBody->setGravity(btVector3(gravity_x, gravity_y, gravity_z));
+  rigidBody->_btRigidBody->setGravity(btVector3(x, y, z));
   return scope.Close(Undefined());
 }
 

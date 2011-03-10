@@ -31,9 +31,7 @@ class RigidBody: public node::ObjectWrap {
     static Handle<Value> SetPosition(const Arguments &args);
     
     static Handle<Value> SetLinearVelocity(const Arguments &args);
-    
-    static Handle<Value> SetMass(const Arguments &args);
-    
+        
     static Handle<Value> SetGravity(const Arguments &args);
     
     static Handle<Value> ApplyImpulse(const Arguments &args);
