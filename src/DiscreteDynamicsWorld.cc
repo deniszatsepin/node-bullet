@@ -95,10 +95,10 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
 }
 
 DiscreteDynamicsWorld::DiscreteDynamicsWorld(
-	Local<CollisionDispatcher> dispatcher,
-	Local<DbvtBroadphase> broadphase,
-	Local<SequentialImpulseConstraintSolver> solver,
-	Local<DefaultCollisionConfiguration> config
+	Handle<CollisionDispatcher> dispatcher,
+	Handle<DbvtBroadphase> broadphase,
+	Handle<SequentialImpulseConstraintSolver> solver,
+	Handle<DefaultCollisionConfiguration> config
 ): ObjectWrap() {
 	HandleScope scope;
 

@@ -29,7 +29,12 @@ class DiscreteDynamicsWorld: public node::ObjectWrap {
 		static Handle<Value> StepSimulation(const Arguments &args);
 		static Handle<Value> Debug(const Arguments &args);
 		
-		DiscreteDynamicsWorld(CollisionDispatcher* collisionDispatcher, DbvtBroadphase* dbvtBroadphase, SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver, DefaultCollisionConfiguration* defaultCollisionConfiguration);
+		DiscreteDynamicsWorld(
+			Handle<CollisionDispatcher> dispatcher,
+			Handle<DbvtBroadphase> broadphase,
+			Handle<SequentialImpulseConstraintSolver> solver,
+			Handle<DefaultCollisionConfiguration> config
+		);
 
 		btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
 		

@@ -28,7 +28,7 @@ CollisionDispatcher::New(const Arguments &args) {
 }
 
 CollisionDispatcher::CollisionDispatcher(
-	Local<DefaultCollisionConfiguration> config
+	Handle<DefaultCollisionConfiguration> config
 ): ObjectWrap() {
 	HandleScope scope;
 

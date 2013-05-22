@@ -19,7 +19,7 @@ class CollisionDispatcher: public node::ObjectWrap {
 		static void Initialize(Handle<Object> target);
 		static Handle<Value> New(const Arguments &args);
 		
-		CollisionDispatcher(DefaultCollisionConfiguration* defaultCollisionConfiguration);
+		CollisionDispatcher(Handle<DefaultCollisionConfiguration> config);
 		
 		btCollisionDispatcher* _btCollisionDispatcher;
 		Persistent<DefaultCollisionConfiguration> _config;
