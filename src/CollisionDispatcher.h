@@ -13,18 +13,18 @@ using namespace v8;
 using namespace node;
 
 class CollisionDispatcher: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    CollisionDispatcher(DefaultCollisionConfiguration* defaultCollisionConfiguration);
-    
-    btCollisionDispatcher* _btCollisionDispatcher;
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		CollisionDispatcher(DefaultCollisionConfiguration* defaultCollisionConfiguration);
+		
+		btCollisionDispatcher* _btCollisionDispatcher;
 
-  private:
-    ~CollisionDispatcher();
+	private:
+		~CollisionDispatcher();
 };
 
 #endif

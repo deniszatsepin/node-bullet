@@ -11,18 +11,18 @@ using namespace v8;
 using namespace node;
 
 class DbvtBroadphase: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    DbvtBroadphase();
-    
-    btDbvtBroadphase* _btDbvtBroadphase;
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		DbvtBroadphase();
+		
+		btDbvtBroadphase* _btDbvtBroadphase;
 
-  private:
-    ~DbvtBroadphase();
+	private:
+		~DbvtBroadphase();
 };
 
 #endif

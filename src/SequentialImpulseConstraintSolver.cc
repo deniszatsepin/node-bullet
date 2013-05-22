@@ -4,33 +4,33 @@ Persistent<FunctionTemplate> SequentialImpulseConstraintSolver::constructor;
 
 void
 SequentialImpulseConstraintSolver::Initialize(Handle<Object> target) {
-  HandleScope scope;
+	HandleScope scope;
 
-  constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(SequentialImpulseConstraintSolver::New));
-  constructor->InstanceTemplate()->SetInternalFieldCount(1);
-  constructor->SetClassName(String::NewSymbol("SequentialImpulseConstraintSolver"));
+	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(SequentialImpulseConstraintSolver::New));
+	constructor->InstanceTemplate()->SetInternalFieldCount(1);
+	constructor->SetClassName(String::NewSymbol("SequentialImpulseConstraintSolver"));
 
-  Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
+	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
 
-  target->Set(String::NewSymbol("SequentialImpulseConstraintSolver"), constructor->GetFunction());
+	target->Set(String::NewSymbol("SequentialImpulseConstraintSolver"), constructor->GetFunction());
 }
 
 Handle<Value>
 SequentialImpulseConstraintSolver::New(const Arguments &args) {
-  HandleScope scope;
-  
-  SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver = new SequentialImpulseConstraintSolver();
-  sequentialImpulseConstraintSolver->Wrap(args.This());
-  
-  return args.This();
+	HandleScope scope;
+	
+	SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver = new SequentialImpulseConstraintSolver();
+	sequentialImpulseConstraintSolver->Wrap(args.This());
+	
+	return args.This();
 }
 
 SequentialImpulseConstraintSolver::SequentialImpulseConstraintSolver(): ObjectWrap() {
-  _btSequentialImpulseConstraintSolver = new btSequentialImpulseConstraintSolver();
+	_btSequentialImpulseConstraintSolver = new btSequentialImpulseConstraintSolver();
 }
 
 SequentialImpulseConstraintSolver::~SequentialImpulseConstraintSolver() {
-  if (_btSequentialImpulseConstraintSolver) {
-    //delete _btSequentialImpulseConstraintSolver;
-  }
+	if (_btSequentialImpulseConstraintSolver) {
+		//delete _btSequentialImpulseConstraintSolver;
+	}
 }

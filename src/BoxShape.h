@@ -11,18 +11,18 @@ using namespace v8;
 using namespace node;
 
 class BoxShape: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    BoxShape();
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		BoxShape();
 
-    btBoxShape* _btBoxShape;
-    
-  private:
-    ~BoxShape();
+		btBoxShape* _btBoxShape;
+		
+	private:
+		~BoxShape();
 };
 
 #endif

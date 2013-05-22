@@ -15,30 +15,30 @@ using namespace v8;
 using namespace node;
 
 class RigidBody: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    RigidBody(double a_mass);
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		RigidBody(double a_mass);
 
-    btRigidBody* _btRigidBody;
-    btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
-    float _mass;
-    
-    static Handle<Value> GetPosition(const Arguments &args);
-    static Handle<Value> SetPosition(const Arguments &args);
-    
-    static Handle<Value> SetLinearVelocity(const Arguments &args);
-        
-    static Handle<Value> SetGravity(const Arguments &args);
-    
-    static Handle<Value> ApplyImpulse(const Arguments &args);
-    static Handle<Value> ApplyCentralImpulse(const Arguments &args);
-    
-  private:
-    ~RigidBody();
+		btRigidBody* _btRigidBody;
+		btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
+		float _mass;
+		
+		static Handle<Value> GetPosition(const Arguments &args);
+		static Handle<Value> SetPosition(const Arguments &args);
+		
+		static Handle<Value> SetLinearVelocity(const Arguments &args);
+				
+		static Handle<Value> SetGravity(const Arguments &args);
+		
+		static Handle<Value> ApplyImpulse(const Arguments &args);
+		static Handle<Value> ApplyCentralImpulse(const Arguments &args);
+		
+	private:
+		~RigidBody();
 };
 
 #endif

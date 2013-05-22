@@ -11,18 +11,18 @@ using namespace v8;
 using namespace node;
 
 class SequentialImpulseConstraintSolver: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    SequentialImpulseConstraintSolver();
-    
-    btSequentialImpulseConstraintSolver* _btSequentialImpulseConstraintSolver;
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		SequentialImpulseConstraintSolver();
+		
+		btSequentialImpulseConstraintSolver* _btSequentialImpulseConstraintSolver;
 
-  private:
-    ~SequentialImpulseConstraintSolver();
+	private:
+		~SequentialImpulseConstraintSolver();
 };
 
 #endif

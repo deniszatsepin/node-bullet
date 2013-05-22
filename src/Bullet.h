@@ -9,16 +9,16 @@ using namespace v8;
 using namespace node;
 
 class Bullet: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    Bullet();
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		Bullet();
 
-  private:
-    ~Bullet();
+	private:
+		~Bullet();
 };
 
 #endif

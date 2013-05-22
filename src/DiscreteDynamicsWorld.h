@@ -17,24 +17,24 @@ using namespace v8;
 using namespace node;
 
 class DiscreteDynamicsWorld: public node::ObjectWrap {
-  public:
-    static Persistent<FunctionTemplate> constructor;
-    
-    static void Initialize(Handle<Object> target);
-    static Handle<Value> New(const Arguments &args);
-    
-    static Handle<Value> GetGravity(const Arguments &args);
-    static Handle<Value> SetGravity(const Arguments &args);
-    static Handle<Value> AddRigidBody(const Arguments &args);
-    static Handle<Value> StepSimulation(const Arguments &args);
-    static Handle<Value> Debug(const Arguments &args);
-    
-    DiscreteDynamicsWorld(CollisionDispatcher* collisionDispatcher, DbvtBroadphase* dbvtBroadphase, SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver, DefaultCollisionConfiguration* defaultCollisionConfiguration);
+	public:
+		static Persistent<FunctionTemplate> constructor;
+		
+		static void Initialize(Handle<Object> target);
+		static Handle<Value> New(const Arguments &args);
+		
+		static Handle<Value> GetGravity(const Arguments &args);
+		static Handle<Value> SetGravity(const Arguments &args);
+		static Handle<Value> AddRigidBody(const Arguments &args);
+		static Handle<Value> StepSimulation(const Arguments &args);
+		static Handle<Value> Debug(const Arguments &args);
+		
+		DiscreteDynamicsWorld(CollisionDispatcher* collisionDispatcher, DbvtBroadphase* dbvtBroadphase, SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver, DefaultCollisionConfiguration* defaultCollisionConfiguration);
 
-    btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
-    
-  private:
-    ~DiscreteDynamicsWorld();
+		btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
+		
+	private:
+		~DiscreteDynamicsWorld();
 };
 
 #endif
