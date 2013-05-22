@@ -30,7 +30,5 @@ BoxShape::BoxShape(): ObjectWrap() {
 }
 
 BoxShape::~BoxShape() {
-	if (_btBoxShape) {
-		delete _btBoxShape;
-	}
+	if(_btBoxShape) delete _btBoxShape;
 }

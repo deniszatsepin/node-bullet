@@ -51,9 +51,7 @@ RigidBody::RigidBody(double a_mass): ObjectWrap() {
 }
 
 RigidBody::~RigidBody() {
-	if (_btRigidBody) {
-		//delete _btRigidBody;
-	}
+	if(_btRigidBody) delete _btRigidBody;
 }
 
 Handle<Value>

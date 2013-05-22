@@ -30,7 +30,6 @@ DefaultCollisionConfiguration::DefaultCollisionConfiguration(): ObjectWrap() {
 }
 
 DefaultCollisionConfiguration::~DefaultCollisionConfiguration() {
-	if (_btDefaultCollisionConfiguration) {
-		//delete _btDefaultCollisionConfiguration;
-	}
+	if(_btDefaultCollisionConfiguration)
+		delete _btDefaultCollisionConfiguration;
 }

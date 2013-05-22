@@ -34,7 +34,5 @@ Transform::Transform(): ObjectWrap() {
 }
 
 Transform::~Transform() {
-	if (_btTransform) {
-		delete _btTransform;
-	}
+	if(_btTransform) delete _btTransform;
 }

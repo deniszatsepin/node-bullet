@@ -104,7 +104,6 @@ DiscreteDynamicsWorld::DiscreteDynamicsWorld(CollisionDispatcher* collisionDispa
 }
 
 DiscreteDynamicsWorld::~DiscreteDynamicsWorld() {
-	if (_btDiscreteDynamicsWorld) {
-		// delete _btDiscreteDynamicsWorld;
-	}
+	if(_btDiscreteDynamicsWorld)
+		delete _btDiscreteDynamicsWorld;
 }
