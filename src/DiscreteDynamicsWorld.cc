@@ -18,8 +18,6 @@ DiscreteDynamicsWorld::Initialize(Handle<Object> target) {
 	NODE_SET_PROTOTYPE_METHOD(constructor, "addRigidBody", AddRigidBody);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "stepSimulation", StepSimulation);
 
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
 	target->Set(String::NewSymbol("DiscreteDynamicsWorld"), constructor->GetFunction());
 	
 	return;
@@ -121,7 +119,7 @@ DiscreteDynamicsWorld::~DiscreteDynamicsWorld() {
 	_solver.Dispose();
 	_config.Dispose();
 
-	for(std::list<Persistent<Object>>::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
+	for(std::list< Persistent<Object> >::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
 		(*it).Dispose();
 	}
 }
