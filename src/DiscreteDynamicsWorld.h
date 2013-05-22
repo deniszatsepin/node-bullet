@@ -43,7 +43,7 @@ class DiscreteDynamicsWorld: public node::ObjectWrap {
 		Persistent<Object> _broadphase;
 		Persistent<Object> _solver;
 		Persistent<Object> _config;
-		std::list<Persistent<Object>> _bodies;
+		std::list< Persistent<Object> > _bodies;
 		
 	private:
 		~DiscreteDynamicsWorld();
