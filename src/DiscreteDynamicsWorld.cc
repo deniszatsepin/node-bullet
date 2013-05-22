@@ -75,8 +75,7 @@ DiscreteDynamicsWorld::AddRigidBody(const Arguments &args) {
 
 	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 	discreteDynamicsWorld->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
-
-	_bodies.push_back(Persistent<Object>::New(obj));
+	discreteDynamicsWorld->_bodies.push_back(Persistent<Object>::New(obj));
 	
 	return scope.Close(Undefined());
 }
