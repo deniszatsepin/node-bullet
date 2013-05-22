@@ -1,44 +1,32 @@
 {
-  "name": "bullet",
-  "description": "\"Bullet\" physics for node.js",
-  "keywords": [
-    "bullet",
-    "physics",
-    "dynamics",
-    "engine",
-    "binding",
-    "wrapper"
-  ],
-  "version": "0.1.0",
-  "author": "Feisty Studios <node-bullet@feistystudios.com> (http://feistystudios.com/)",
-  "licenses": [
-    {
-      "type": "FEISTY",
-      "url": "http://github.com/feisty/license/raw/master/LICENSE"
-    }
-  ],
-  "contributors": [
-    "Nicholas Kinsey <nicholas.kinsey@feistystudios.com>"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/feisty/node-bullet.git",
-    "private": "git@github.com:feisty/node-bullet.git",
-    "web": "http://github.com/feisty/node-bullet"
-  },
-  "bugs": {
-    "mail": "node-bullet@feistystudios.com",
-    "web": "http://github.com/feisty/node-bullet/issues"
-  },
-  "directories": {
-    "lib": "./lib",
-    "doc": "./doc"
-  },
-  "main": "./index.coffee",
-  "dependencies": {
-    "coffee-script": ">= 1.0.1"
-  },
-  "engines": {
-    "node": ">= 0.3.3"
-  }
+	"name": "bullet",
+	"description": "\"Bullet\" physics for node.js",
+	"keywords": [
+		"bullet",
+		"physics",
+		"dynamics",
+		"engine",
+		"binding",
+		"wrapper"
+	],
+	"version": "0.1.0",
+	"author": "Michael Morrison <mmorrison@wootalyzer.com>",
+	"licenses": [
+		{
+			"type": "FEISTY",
+			"url": "http://github.com/feisty/license/raw/master/LICENSE"
+		}
+	],
+	"contributors": [
+		"Michael Morrison <mmorrison@wootalyzer.com>",
+		"Nicholas Kinsey <nicholas.kinsey@feistystudios.com>",
+		"Feisty Studios <node-bullet@feistystudios.com> (http://feistystudios.com/)"
+	],
+	"main": "./index.js",
+	"engines": {
+		"node": ">= 0.3.3"
+	},
+	"scripts": {
+		"test": "node test/master.js"
+	}
 }
