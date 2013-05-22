@@ -22,7 +22,7 @@ class CollisionDispatcher: public node::ObjectWrap {
 		CollisionDispatcher(DefaultCollisionConfiguration* defaultCollisionConfiguration);
 		
 		btCollisionDispatcher* _btCollisionDispatcher;
-		DefaultCollisionConfiguration* _collisionConfig;
+		Persistent<DefaultCollisionConfiguration> _config;
 
 	private:
 		~CollisionDispatcher();

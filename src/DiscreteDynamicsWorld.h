@@ -33,11 +33,11 @@ class DiscreteDynamicsWorld: public node::ObjectWrap {
 
 		btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
 		
-		CollisionDispatcher* _dispatch;
-		DbvtBroadphase* _broadphase;
-		SequentialImpulseConstraintSolver* _solver;
-		DefaultCollisionConfiguration* _config;
-		std::list<RigidBody*> _bodies;
+		Persistent<CollisionDispatcher> _dispatcher;
+		Persistent<DbvtBroadphase> _broadphase;
+		Persistent<SequentialImpulseConstraintSolver> _solver;
+		Persistent<DefaultCollisionConfiguration> _config;
+		std::list<Persistent<RigidBody>> _bodies;
 		
 	private:
 		~DiscreteDynamicsWorld();

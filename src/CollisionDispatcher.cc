@@ -18,24 +18,28 @@ CollisionDispatcher::Initialize(Handle<Object> target) {
 Handle<Value>
 CollisionDispatcher::New(const Arguments &args) {
 	HandleScope scope;
-	
-	Local<Object> obj = args[0]->ToObject();
-	DefaultCollisionConfiguration* defaultCollisionConfiguration = ObjectWrap::Unwrap<DefaultCollisionConfiguration>(obj);
-	
-	CollisionDispatcher* collisionDispatcher = new CollisionDispatcher(defaultCollisionConfiguration);
+
+	CollisionDispatcher* collisionDispatcher = new CollisionDispatcher(
+		Local<DefaultCollisionConfiguration>::Cast(args[0])
+	);
 	collisionDispatcher->Wrap(args.This());
 	
 	return args.This();
 }
 
-CollisionDispatcher::CollisionDispatcher(DefaultCollisionConfiguration* defaultCollisionConfiguration): ObjectWrap() {
-	_collisionConfig = defaultCollisionConfiguration;
-	_collisionConfig->Ref();
-	_btCollisionDispatcher = new btCollisionDispatcher(_collisionConfig->_btDefaultCollisionConfiguration);
+CollisionDispatcher::CollisionDispatcher(
+	Local<DefaultCollisionConfiguration> config
+): ObjectWrap() {
+	HandleScope scope;
+
+	_config = Persistent<DefaultCollisionConfiguration>::New(config);
+	_btCollisionDispatcher = new btCollisionDispatcher(
+		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(config)->_btDefaultCollisionConfiguration
+	);
 }
 
 CollisionDispatcher::~CollisionDispatcher() {
 	if(_btCollisionDispatcher)
 		delete _btCollisionDispatcher;
-	_collisionConfig->Unref();
+	_config.Dispose();
 }
