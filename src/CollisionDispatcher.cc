@@ -29,10 +29,13 @@ CollisionDispatcher::New(const Arguments &args) {
 }
 
 CollisionDispatcher::CollisionDispatcher(DefaultCollisionConfiguration* defaultCollisionConfiguration): ObjectWrap() {
-	_btCollisionDispatcher = new btCollisionDispatcher(defaultCollisionConfiguration->_btDefaultCollisionConfiguration);
+	_collisionConfig = defaultCollisionConfiguration;
+	_collisionConfig->Ref();
+	_btCollisionDispatcher = new btCollisionDispatcher(_collisionConfig->_btDefaultCollisionConfiguration);
 }
 
 CollisionDispatcher::~CollisionDispatcher() {
 	if(_btCollisionDispatcher)
 		delete _btCollisionDispatcher;
+	_collisionConfig->Unref();
 }

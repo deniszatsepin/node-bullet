@@ -83,6 +83,9 @@ DiscreteDynamicsWorld::AddRigidBody(const Arguments &args) {
 	
 	discreteDynamicsWorld->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
 	
+	rigidBody->Ref();
+	_bodies.push_back(rigidBody);
+	
 	return scope.Close(Undefined());
 }
 
@@ -100,10 +103,35 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
 }
 
 DiscreteDynamicsWorld::DiscreteDynamicsWorld(CollisionDispatcher* collisionDispatcher, DbvtBroadphase* dbvtBroadphase, SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver, DefaultCollisionConfiguration* defaultCollisionConfiguration): ObjectWrap() {	
-	_btDiscreteDynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher->_btCollisionDispatcher, dbvtBroadphase->_btDbvtBroadphase, sequentialImpulseConstraintSolver->_btSequentialImpulseConstraintSolver, defaultCollisionConfiguration->_btDefaultCollisionConfiguration);
+	_dispatcher = collisionDispatcher;
+	_dispatcher->Ref();
+
+	_broadphase = dbvtBroadphase;
+	_broadphase->Ref();
+
+	_solver = sequentialImpulseConstraintSolver;
+	_solver->Ref();
+
+	_config = defaultCollisionConfiguration;
+	_config->Ref();
+
+	_btDiscreteDynamicsWorld = new btDiscreteDynamicsWorld(
+		collisionDispatcher->_btCollisionDispatcher,
+		dbvtBroadphase->_btDbvtBroadphase,
+		sequentialImpulseConstraintSolver->_btSequentialImpulseConstraintSolver,
+		defaultCollisionConfiguration->_btDefaultCollisionConfiguration
+	);
 }
 
 DiscreteDynamicsWorld::~DiscreteDynamicsWorld() {
 	if(_btDiscreteDynamicsWorld)
 		delete _btDiscreteDynamicsWorld;
+	
+	_dispatcher->Unref();
+	_broadphase->Unref();
+	_solver->Unref();
+	_config->Unref();
+	for(std::list<RigidBody*>::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
+		(*it)->Unref();
+	}
 }
