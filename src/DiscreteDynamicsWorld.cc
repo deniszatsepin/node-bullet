@@ -30,10 +30,10 @@ DiscreteDynamicsWorld::New(const Arguments &args) {
 	HandleScope scope;
 
 	DiscreteDynamicsWorld* discreteDynamicsWorld = new DiscreteDynamicsWorld(
-		Local<CollisionDispatcher>::Cast(args[0]),
-		Local<DbvtBroadphase>::Cast(args[1]),
-		Local<SequentialImpulseConstraintSolver>::Cast(args[2]),
-		Local<DefaultCollisionConfiguration>::Cast(args[3])
+		args[0]->ToObject(),
+		args[1]->ToObject(),
+		args[2]->ToObject(),
+		args[3]->ToObject()
 	);
 	discreteDynamicsWorld->Wrap(args.This());
 	
@@ -70,13 +70,13 @@ Handle<Value>
 DiscreteDynamicsWorld::AddRigidBody(const Arguments &args) {
 	HandleScope scope;
 
-	Local<RigidBody> handle = Local<RigidBody>::Cast(args[0]);
-	RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(handle);
+	Local<Object> obj = args[0]->ToObject();
+	RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(obj);
 
 	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 	discreteDynamicsWorld->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
 
-	_bodies.push_back(Persistent<RigidBody>::New(handle));
+	_bodies.push_back(Persistent<Object>::New(obj));
 	
 	return scope.Close(Undefined());
 }
@@ -95,17 +95,15 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
 }
 
 DiscreteDynamicsWorld::DiscreteDynamicsWorld(
-	Handle<CollisionDispatcher> dispatcher,
-	Handle<DbvtBroadphase> broadphase,
-	Handle<SequentialImpulseConstraintSolver> solver,
-	Handle<DefaultCollisionConfiguration> config
+	Handle<Object> dispatcher,
+	Handle<Object> broadphase,
+	Handle<Object> solver,
+	Handle<Object> config
 ): ObjectWrap() {
-	HandleScope scope;
-
-	_dispatcher = Persistent<CollisionDispatcher>::New(dispatcher);
-	_broadphase = Persistent<DbvtBroadphase>::New(broadphase);
-	_solver = Persistent<SequentialImpulseConstraintSolver>::New(solver);
-	_config = Persistent<DefaultCollisionConfiguration>::New(config);
+	_dispatcher = Persistent<Object>::New(dispatcher);
+	_broadphase = Persistent<Object>::New(broadphase);
+	_solver = Persistent<Object>::New(solver);
+	_config = Persistent<Object>::New(config);
 
 	_btDiscreteDynamicsWorld = new btDiscreteDynamicsWorld(
 		ObjectWrap::Unwrap<CollisionDispatcher>(_dispatcher)->_btCollisionDispatcher,
@@ -124,7 +122,7 @@ DiscreteDynamicsWorld::~DiscreteDynamicsWorld() {
 	_solver.Dispose();
 	_config.Dispose();
 
-	for(std::list<RigidBody*>::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
+	for(std::list<Persistent<Object>>::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
 		(*it).Dispose();
 	}
 }

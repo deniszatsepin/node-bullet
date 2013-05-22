@@ -30,19 +30,19 @@ class DiscreteDynamicsWorld: public node::ObjectWrap {
 		static Handle<Value> Debug(const Arguments &args);
 		
 		DiscreteDynamicsWorld(
-			Handle<CollisionDispatcher> dispatcher,
-			Handle<DbvtBroadphase> broadphase,
-			Handle<SequentialImpulseConstraintSolver> solver,
-			Handle<DefaultCollisionConfiguration> config
+			Handle<Object> dispatcher,
+			Handle<Object> broadphase,
+			Handle<Object> solver,
+			Handle<Object> config
 		);
 
 		btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
 		
-		Persistent<CollisionDispatcher> _dispatcher;
-		Persistent<DbvtBroadphase> _broadphase;
-		Persistent<SequentialImpulseConstraintSolver> _solver;
-		Persistent<DefaultCollisionConfiguration> _config;
-		std::list<Persistent<RigidBody>> _bodies;
+		Persistent<Object> _dispatcher;
+		Persistent<Object> _broadphase;
+		Persistent<Object> _solver;
+		Persistent<Object> _config;
+		std::list<Persistent<Object>> _bodies;
 		
 	private:
 		~DiscreteDynamicsWorld();

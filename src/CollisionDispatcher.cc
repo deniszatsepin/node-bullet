@@ -19,20 +19,16 @@ Handle<Value>
 CollisionDispatcher::New(const Arguments &args) {
 	HandleScope scope;
 
-	CollisionDispatcher* collisionDispatcher = new CollisionDispatcher(
-		Local<DefaultCollisionConfiguration>::Cast(args[0])
-	);
+	CollisionDispatcher* collisionDispatcher = new CollisionDispatcher(args[0]->ToObject());
 	collisionDispatcher->Wrap(args.This());
-	
+
 	return args.This();
 }
 
 CollisionDispatcher::CollisionDispatcher(
-	Handle<DefaultCollisionConfiguration> config
+	Handle<Object> config
 ): ObjectWrap() {
-	HandleScope scope;
-
-	_config = Persistent<DefaultCollisionConfiguration>::New(config);
+	_config = Persistent<Object>::New(config);
 	_btCollisionDispatcher = new btCollisionDispatcher(
 		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(config)->_btDefaultCollisionConfiguration
 	);
