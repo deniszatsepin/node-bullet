@@ -10,10 +10,10 @@
 #include "RigidBody.h"
 
 OBJECT_DEF_START(DiscreteDynamicsWorld)
-	static Handle<Value> GetGravity(const Arguments &args);
-	static Handle<Value> SetGravity(const Arguments &args);
-	static Handle<Value> AddRigidBody(const Arguments &args);
-	static Handle<Value> StepSimulation(const Arguments &args);
+	OBJECT_DEF_FUNCTION(GetGravity);
+	OBJECT_DEF_FUNCTION(SetGravity);
+	OBJECT_DEF_FUNCTION(AddRigidBody);
+	OBJECT_DEF_FUNCTION(StepSimulation);
 
 	btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
 	Persistent<Object> _dispatcher;

@@ -7,6 +7,7 @@
 #include "SequentialImpulseConstraintSolver.h"
 #include "DiscreteDynamicsWorld.h"
 #include "BoxShape.h"
+#include "ConvexHullShape.h"
 #include "Transform.h"
 #include "RigidBody.h"
 
@@ -26,6 +27,7 @@ extern "C" {
 		SequentialImpulseConstraintSolver::Initialize(target);
 		DiscreteDynamicsWorld::Initialize(target);
 		BoxShape::Initialize(target);
+		ConvexHullShape::Initialize(target);
 		Transform::Initialize(target);
 		RigidBody::Initialize(target);
 	}

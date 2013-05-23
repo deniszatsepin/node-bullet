@@ -35,56 +35,35 @@ OBJECT_DELETE_START(DiscreteDynamicsWorld)
 OBJECT_DELETE_END()
 
 
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,GetGravity)
+	btVector3 gravity = self->_btDiscreteDynamicsWorld->getGravity();
+	return scope.Close(Number::New(gravity.getY()));
+OBJECT_FUNCTION_END()
 
-Handle<Value>
-DiscreteDynamicsWorld::GetGravity(const Arguments &args) {
-	HandleScope scope;
-	
-	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
-	btVector3 gravity = discreteDynamicsWorld->_btDiscreteDynamicsWorld->getGravity();
-	
-	Handle<Number> y = Number::New(gravity.getY());
-	
-	return scope.Close(y);
-}
-
-Handle<Value>
-DiscreteDynamicsWorld::SetGravity(const Arguments &args) {
-	HandleScope scope;
-	
-	double x = args[0]->ToNumber()->Value();
-	double y = args[1]->ToNumber()->Value();
-	double z = args[2]->ToNumber()->Value();
-	
-	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
-	discreteDynamicsWorld->_btDiscreteDynamicsWorld->setGravity(btVector3(x, y, z));
-	
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,SetGravity)
+	self->_btDiscreteDynamicsWorld->setGravity(btVector3(
+		args[0]->ToNumber()->Value(),
+		args[1]->ToNumber()->Value(),
+		args[2]->ToNumber()->Value()
+	));
 	return scope.Close(Undefined());
-}
+OBJECT_FUNCTION_END()
 
-Handle<Value>
-DiscreteDynamicsWorld::AddRigidBody(const Arguments &args) {
-	HandleScope scope;
-
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,AddRigidBody)
 	Local<Object> obj = args[0]->ToObject();
 	RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(obj);
 
-	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
-	discreteDynamicsWorld->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
-	discreteDynamicsWorld->_bodies.push_back(Persistent<Object>::New(obj));
+	self->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
+	self->_bodies.push_back(Persistent<Object>::New(obj));
+
+	return scope.Close(Undefined());
+OBJECT_FUNCTION_END()
+
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,StepSimulation)
+	self->_btDiscreteDynamicsWorld->stepSimulation(
+		args[0]->ToNumber()->Value(),
+		0
+	);
 	
 	return scope.Close(Undefined());
-}
-
-Handle<Value>
-DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
-	HandleScope scope;
-
-	double delta = args[0]->ToNumber()->Value();
-
-	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
-
-	discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta,0);
-	
-	return scope.Close(Undefined());
-}
+OBJECT_FUNCTION_END()

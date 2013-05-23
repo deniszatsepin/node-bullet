@@ -19,6 +19,17 @@ using namespace node;
 #define OBJECT_DEF_END() \
 	};
 
+#define OBJECT_DEF_FUNCTION(NAME) \
+	static Handle<Value> NAME(const Arguments &args)
+
+#define OBJECT_FUNCTION_START(CLASS,NAME) \
+	Handle<Value> CLASS::NAME(const Arguments &args) { \
+		HandleScope scope; \
+		CLASS* self = ObjectWrap::Unwrap<CLASS>(args.This());
+
+#define OBJECT_FUNCTION_END() \
+	}
+
 #define OBJECT_INIT_START(CLASS) \
 	Persistent<FunctionTemplate> CLASS::constructor; \
 	void CLASS::Initialize(Handle<Object> target) { \
