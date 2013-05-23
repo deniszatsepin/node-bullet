@@ -1,41 +1,16 @@
 #include "CollisionDispatcher.h"
 
-Persistent<FunctionTemplate> CollisionDispatcher::constructor;
+OBJECT_INIT_START(CollisionDispatcher)
+OBJECT_INIT_END()
 
-void
-CollisionDispatcher::Initialize(Handle<Object> target) {
-	HandleScope scope;
-
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(CollisionDispatcher::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("CollisionDispatcher"));
-
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
-	target->Set(String::NewSymbol("CollisionDispatcher"), constructor->GetFunction());
-}
-
-Handle<Value>
-CollisionDispatcher::New(const Arguments &args) {
-	HandleScope scope;
-
-	CollisionDispatcher* collisionDispatcher = new CollisionDispatcher(args[0]->ToObject());
-	collisionDispatcher->Wrap(args.This());
-
-	return args.This();
-}
-
-CollisionDispatcher::CollisionDispatcher(
-	Handle<Object> config
-): ObjectWrap() {
-	_config = Persistent<Object>::New(config);
-	_btCollisionDispatcher = new btCollisionDispatcher(
-		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(config)->_btDefaultCollisionConfiguration
+OBJECT_NEW_START(CollisionDispatcher)
+	self->_config = Persistent<Object>::New(args[0]->ToObject());
+	self->_btCollisionDispatcher = new btCollisionDispatcher(
+		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(self->_config)->_btDefaultCollisionConfiguration
 	);
-}
+OBJECT_NEW_END()
 
-CollisionDispatcher::~CollisionDispatcher() {
-	if(_btCollisionDispatcher)
-		delete _btCollisionDispatcher;
+OBJECT_DELETE_START(CollisionDispatcher)
+	delete _btCollisionDispatcher;
 	_config.Dispose();
-}
+OBJECT_DELETE_END()

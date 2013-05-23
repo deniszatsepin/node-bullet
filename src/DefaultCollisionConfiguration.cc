@@ -1,35 +1,12 @@
 #include "DefaultCollisionConfiguration.h"
 
-Persistent<FunctionTemplate> DefaultCollisionConfiguration::constructor;
+OBJECT_INIT_START(DefaultCollisionConfiguration)
+OBJECT_INIT_END()
 
-void
-DefaultCollisionConfiguration::Initialize(Handle<Object> target) {
-	HandleScope scope;
+OBJECT_NEW_START(DefaultCollisionConfiguration)
+	self->_btDefaultCollisionConfiguration = new btDefaultCollisionConfiguration();
+OBJECT_NEW_END()
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(DefaultCollisionConfiguration::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("DefaultCollisionConfiguration"));
-
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
-	target->Set(String::NewSymbol("DefaultCollisionConfiguration"), constructor->GetFunction());
-}
-
-Handle<Value>
-DefaultCollisionConfiguration::New(const Arguments &args) {
-	HandleScope scope;
-	
-	DefaultCollisionConfiguration* defaultCollisionConfiguration = new DefaultCollisionConfiguration();
-	defaultCollisionConfiguration->Wrap(args.This());
-	
-	return args.This();
-}
-
-DefaultCollisionConfiguration::DefaultCollisionConfiguration(): ObjectWrap() {
-	_btDefaultCollisionConfiguration = new btDefaultCollisionConfiguration();
-}
-
-DefaultCollisionConfiguration::~DefaultCollisionConfiguration() {
-	if(_btDefaultCollisionConfiguration)
-		delete _btDefaultCollisionConfiguration;
-}
+OBJECT_DELETE_START(DefaultCollisionConfiguration)
+	delete _btDefaultCollisionConfiguration;
+OBJECT_DELETE_END()

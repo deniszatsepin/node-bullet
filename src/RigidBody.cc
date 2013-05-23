@@ -1,35 +1,16 @@
 #include "RigidBody.h"
 #include "BoxShape.h"
 
-Persistent<FunctionTemplate> RigidBody::constructor;
-
-void
-RigidBody::Initialize(Handle<Object> target) {
-	HandleScope scope;
-
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(RigidBody::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("RigidBody"));
-	
+OBJECT_INIT_START(RigidBody)
 	NODE_SET_PROTOTYPE_METHOD(constructor, "getPosition", GetPosition);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setPosition", SetPosition);
-	
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setLinearVelocity", SetLinearVelocity);
-	
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setGravity", SetGravity);
-	
 	NODE_SET_PROTOTYPE_METHOD(constructor, "applyImpulse", ApplyImpulse);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "applyCentralImpulse", ApplyCentralImpulse);
-	
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-	
-	target->Set(String::NewSymbol("RigidBody"), constructor->GetFunction());
-}
+OBJECT_INIT_END()
 
-Handle<Value>
-RigidBody::New(const Arguments &args) {
-	HandleScope scope;
-
+OBJECT_NEW_START(RigidBody)
 	double mass = args[0]->ToNumber()->Value();
 	Local<Object> shapeHandle = args[1]->ToObject();
 
@@ -41,23 +22,20 @@ RigidBody::New(const Arguments &args) {
 		return scope.Close(Undefined());
 	}
 
-	RigidBody* rigidBody = new RigidBody();
-
 	btVector3 localInertia(0, 0, 0);
 	shape->calculateLocalInertia(mass, localInertia);
 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, NULL, shape, localInertia);
-	rigidBody->_btRigidBody = new btRigidBody(rbInfo);
-	rigidBody->_shape = Persistent<Object>::New(shapeHandle);
+	self->_btRigidBody = new btRigidBody(rbInfo);
+	self->_shape = Persistent<Object>::New(shapeHandle);
+OBJECT_NEW_END()
 
-	rigidBody->Wrap(args.This());
-	return scope.Close(args.This());
-}
-
-RigidBody::~RigidBody() {
-	if(_btRigidBody) delete _btRigidBody;
+OBJECT_DELETE_START(RigidBody)
+	delete _btRigidBody;
 	_shape.Dispose();
-}
+OBJECT_DELETE_END()
+
+
 
 Handle<Value>
 RigidBody::GetPosition(const Arguments &args) {

@@ -1,35 +1,12 @@
 #include "SequentialImpulseConstraintSolver.h"
 
-Persistent<FunctionTemplate> SequentialImpulseConstraintSolver::constructor;
+OBJECT_INIT_START(SequentialImpulseConstraintSolver)
+OBJECT_INIT_END()
 
-void
-SequentialImpulseConstraintSolver::Initialize(Handle<Object> target) {
-	HandleScope scope;
+OBJECT_NEW_START(SequentialImpulseConstraintSolver)
+	self->_btSequentialImpulseConstraintSolver = new btSequentialImpulseConstraintSolver();
+OBJECT_NEW_END()
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(SequentialImpulseConstraintSolver::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("SequentialImpulseConstraintSolver"));
-
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
-	target->Set(String::NewSymbol("SequentialImpulseConstraintSolver"), constructor->GetFunction());
-}
-
-Handle<Value>
-SequentialImpulseConstraintSolver::New(const Arguments &args) {
-	HandleScope scope;
-	
-	SequentialImpulseConstraintSolver* sequentialImpulseConstraintSolver = new SequentialImpulseConstraintSolver();
-	sequentialImpulseConstraintSolver->Wrap(args.This());
-	
-	return args.This();
-}
-
-SequentialImpulseConstraintSolver::SequentialImpulseConstraintSolver(): ObjectWrap() {
-	_btSequentialImpulseConstraintSolver = new btSequentialImpulseConstraintSolver();
-}
-
-SequentialImpulseConstraintSolver::~SequentialImpulseConstraintSolver() {
-	if(_btSequentialImpulseConstraintSolver)
-		delete _btSequentialImpulseConstraintSolver;
-}
+OBJECT_DELETE_START(SequentialImpulseConstraintSolver)
+	delete _btSequentialImpulseConstraintSolver;
+OBJECT_DELETE_END()

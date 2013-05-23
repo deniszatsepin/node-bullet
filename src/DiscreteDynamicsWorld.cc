@@ -1,42 +1,40 @@
 #include "DiscreteDynamicsWorld.h"
 
-#include <iostream>
-using namespace std;
-
-Persistent<FunctionTemplate> DiscreteDynamicsWorld::constructor;
-
-void
-DiscreteDynamicsWorld::Initialize(Handle<Object> target) {
-	HandleScope scope;
-
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(DiscreteDynamicsWorld::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("DiscreteDynamicsWorld"));
-	
+OBJECT_INIT_START(DiscreteDynamicsWorld)
 	NODE_SET_PROTOTYPE_METHOD(constructor, "getGravity", GetGravity);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setGravity", SetGravity);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "addRigidBody", AddRigidBody);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "stepSimulation", StepSimulation);
+OBJECT_INIT_END()
 
-	target->Set(String::NewSymbol("DiscreteDynamicsWorld"), constructor->GetFunction());
-	
-	return;
-}
+OBJECT_NEW_START(DiscreteDynamicsWorld)
+	self->_dispatcher = Persistent<Object>::New(args[0]->ToObject());
+	self->_broadphase = Persistent<Object>::New(args[1]->ToObject());
+	self->_solver = Persistent<Object>::New(args[2]->ToObject());
+	self->_config = Persistent<Object>::New(args[3]->ToObject());
 
-Handle<Value>
-DiscreteDynamicsWorld::New(const Arguments &args) {
-	HandleScope scope;
-
-	DiscreteDynamicsWorld* discreteDynamicsWorld = new DiscreteDynamicsWorld(
-		args[0]->ToObject(),
-		args[1]->ToObject(),
-		args[2]->ToObject(),
-		args[3]->ToObject()
+	self->_btDiscreteDynamicsWorld = new btDiscreteDynamicsWorld(
+		ObjectWrap::Unwrap<CollisionDispatcher>(self->_dispatcher)->_btCollisionDispatcher,
+		ObjectWrap::Unwrap<DbvtBroadphase>(self->_broadphase)->_btDbvtBroadphase,
+		ObjectWrap::Unwrap<SequentialImpulseConstraintSolver>(self->_solver)->_btSequentialImpulseConstraintSolver,
+		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(self->_config)->_btDefaultCollisionConfiguration
 	);
-	discreteDynamicsWorld->Wrap(args.This());
-	
-	return scope.Close(args.This());
-}
+OBJECT_NEW_END()
+
+OBJECT_DELETE_START(DiscreteDynamicsWorld)
+	delete _btDiscreteDynamicsWorld;
+
+	_dispatcher.Dispose();
+	_broadphase.Dispose();
+	_solver.Dispose();
+	_config.Dispose();
+
+	for(std::list< Persistent<Object> >::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
+		(*it).Dispose();
+	}
+OBJECT_DELETE_END()
+
+
 
 Handle<Value>
 DiscreteDynamicsWorld::GetGravity(const Arguments &args) {
@@ -89,37 +87,4 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
 	discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta,0);
 	
 	return scope.Close(Undefined());
-}
-
-DiscreteDynamicsWorld::DiscreteDynamicsWorld(
-	Handle<Object> dispatcher,
-	Handle<Object> broadphase,
-	Handle<Object> solver,
-	Handle<Object> config
-): ObjectWrap() {
-	_dispatcher = Persistent<Object>::New(dispatcher);
-	_broadphase = Persistent<Object>::New(broadphase);
-	_solver = Persistent<Object>::New(solver);
-	_config = Persistent<Object>::New(config);
-
-	_btDiscreteDynamicsWorld = new btDiscreteDynamicsWorld(
-		ObjectWrap::Unwrap<CollisionDispatcher>(_dispatcher)->_btCollisionDispatcher,
-		ObjectWrap::Unwrap<DbvtBroadphase>(_broadphase)->_btDbvtBroadphase,
-		ObjectWrap::Unwrap<SequentialImpulseConstraintSolver>(_solver)->_btSequentialImpulseConstraintSolver,
-		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(_config)->_btDefaultCollisionConfiguration
-	);
-}
-
-DiscreteDynamicsWorld::~DiscreteDynamicsWorld() {
-	if(_btDiscreteDynamicsWorld)
-		delete _btDiscreteDynamicsWorld;
-	
-	_dispatcher.Dispose();
-	_broadphase.Dispose();
-	_solver.Dispose();
-	_config.Dispose();
-
-	for(std::list< Persistent<Object> >::iterator it=_bodies.begin(); it != _bodies.end(); ++it) {
-		(*it).Dispose();
-	}
 }

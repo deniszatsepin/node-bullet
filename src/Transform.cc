@@ -1,38 +1,15 @@
 #include "Transform.h"
 
-Persistent<FunctionTemplate> Transform::constructor;
+OBJECT_INIT_START(Transform)
+OBJECT_INIT_END()
 
-void
-Transform::Initialize(Handle<Object> target) {
-	HandleScope scope;
-
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(Transform::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("Transform"));
-
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
-	target->Set(String::NewSymbol("Transform"), constructor->GetFunction());
-}
-
-Handle<Value>
-Transform::New(const Arguments &args) {
-	HandleScope scope;
-	
-	Transform* transform = new Transform();
-	transform->Wrap(args.This());
-	
-	return args.This();
-}
-
-Transform::Transform(): ObjectWrap() {
-	_btTransform = new btTransform();
-	
+OBJECT_NEW_START(Transform)
+	self->_btTransform = new btTransform();
 	// TODO move these out to methods
-	_btTransform->setIdentity();
-	_btTransform->setOrigin(btVector3(0, 0, 0));
-}
+	self->_btTransform->setIdentity();
+	self->_btTransform->setOrigin(btVector3(0, 0, 0));
+OBJECT_NEW_END()
 
-Transform::~Transform() {
-	if(_btTransform) delete _btTransform;
-}
+OBJECT_DELETE_START(Transform)
+	delete _btTransform;
+OBJECT_DELETE_END()

@@ -1,31 +1,9 @@
-#ifndef __NODE_COLLISIONDISPATCHER_H__
-#define __NODE_COLLISIONDISPATCHER_H__
-
-#include <v8.h>
-#include <node.h>
-#include <node_object_wrap.h>
-
+#pragma once
+#include "Object.h"
 #include "DefaultCollisionConfiguration.h"
-
 #include "btBulletDynamicsCommon.h"
 
-using namespace v8;
-using namespace node;
-
-class CollisionDispatcher: public node::ObjectWrap {
-	public:
-		static Persistent<FunctionTemplate> constructor;
-		
-		static void Initialize(Handle<Object> target);
-		static Handle<Value> New(const Arguments &args);
-		
-		CollisionDispatcher(Handle<Object> config);
-		
-		btCollisionDispatcher* _btCollisionDispatcher;
-		Persistent<Object> _config;
-
-	private:
-		~CollisionDispatcher();
-};
-
-#endif
+OBJECT_DEF_START(CollisionDispatcher)
+	btCollisionDispatcher* _btCollisionDispatcher;
+	Persistent<Object> _config;
+OBJECT_DEF_END()

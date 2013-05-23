@@ -1,34 +1,12 @@
 #include "BoxShape.h"
 
-Persistent<FunctionTemplate> BoxShape::constructor;
+OBJECT_INIT_START(BoxShape)
+OBJECT_INIT_END()
 
-void
-BoxShape::Initialize(Handle<Object> target) {
-	HandleScope scope;
+OBJECT_NEW_START(BoxShape)
+	self->_btBoxShape = new btBoxShape(btVector3(btScalar(1.0),btScalar(1.0),btScalar(1.0)));
+OBJECT_NEW_END()
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(BoxShape::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("BoxShape"));
-
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
-	target->Set(String::NewSymbol("BoxShape"), constructor->GetFunction());
-}
-
-Handle<Value>
-BoxShape::New(const Arguments &args) {
-	HandleScope scope;
-	
-	BoxShape* boxShape = new BoxShape();
-	boxShape->Wrap(args.This());
-	
-	return args.This();
-}
-
-BoxShape::BoxShape(): ObjectWrap() {
-	_btBoxShape = new btBoxShape(btVector3(btScalar(1.0),btScalar(1.0),btScalar(1.0)));
-}
-
-BoxShape::~BoxShape() {
-	if(_btBoxShape) delete _btBoxShape;
-}
+OBJECT_DELETE_START(BoxShape)
+	delete _btBoxShape;
+OBJECT_DELETE_END()

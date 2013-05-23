@@ -1,34 +1,12 @@
 #include "DbvtBroadphase.h"
 
-Persistent<FunctionTemplate> DbvtBroadphase::constructor;
+OBJECT_INIT_START(DbvtBroadphase)
+OBJECT_INIT_END()
 
-void
-DbvtBroadphase::Initialize(Handle<Object> target) {
-	HandleScope scope;
+OBJECT_NEW_START(DbvtBroadphase)
+	self->_btDbvtBroadphase = new btDbvtBroadphase();
+OBJECT_NEW_END()
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(DbvtBroadphase::New));
-	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("DbvtBroadphase"));
-
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-
-	target->Set(String::NewSymbol("DbvtBroadphase"), constructor->GetFunction());
-}
-
-Handle<Value>
-DbvtBroadphase::New(const Arguments &args) {
-	HandleScope scope;
-	
-	DbvtBroadphase* dbvtBroadphase = new DbvtBroadphase();
-	dbvtBroadphase->Wrap(args.This());
-	
-	return args.This();
-}
-
-DbvtBroadphase::DbvtBroadphase(): ObjectWrap() {
-	_btDbvtBroadphase = new btDbvtBroadphase();
-}
-
-DbvtBroadphase::~DbvtBroadphase() {
-	if(_btDbvtBroadphase) delete _btDbvtBroadphase;
-}
+OBJECT_DELETE_START(DbvtBroadphase)
+	delete _btDbvtBroadphase;
+OBJECT_DELETE_END()
