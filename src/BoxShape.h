@@ -12,15 +12,13 @@ using namespace node;
 
 class BoxShape: public node::ObjectWrap {
 	public:
+		BoxShape();
 		static Persistent<FunctionTemplate> constructor;
-		
 		static void Initialize(Handle<Object> target);
 		static Handle<Value> New(const Arguments &args);
-		
-		BoxShape();
 
 		btBoxShape* _btBoxShape;
-		
+
 	private:
 		~BoxShape();
 };

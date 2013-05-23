@@ -86,7 +86,7 @@ DiscreteDynamicsWorld::StepSimulation(const Arguments &args) {
 
 	DiscreteDynamicsWorld* discreteDynamicsWorld = ObjectWrap::Unwrap<DiscreteDynamicsWorld>(args.This());
 
-	discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta);
+	discreteDynamicsWorld->_btDiscreteDynamicsWorld->stepSimulation(delta,0);
 	
 	return scope.Close(Undefined());
 }

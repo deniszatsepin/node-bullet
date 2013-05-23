@@ -50,18 +50,20 @@ var world = {};
 var rows=20,cols=20;
 for(var i = 0; i < rows; i++) {
 	for(var j = 0; j < cols; j++) {
-		var block = new Bullet.RigidBody(1);
+		var shape = new Bullet.BoxShape();
+		console.log("1",shape.prototype);
+		var block = new Bullet.RigidBody(1,shape);
+		console.log("2",block);
 		discreteDynamicsWorld.addRigidBody(block);
+		console.log("3");
 		block.setPosition(i * 5, 0, j * 5);
+		console.log(block.getPosition());
 		world[i+':'+j] = block;
 	}
+	console.log("4");
 	console.log("added "+((i+1)*cols)+" of "+(rows*cols)+" blocks");
 }
 console.log("blocks added");
-
-var b = new Bullet.RigidBody(1);
-discreteDynamicsWorld.addRigidBody(b);
-b.setPosition(0, 10, 0);
 
 function tick() {
 	discreteDynamicsWorld.stepSimulation(1/120);

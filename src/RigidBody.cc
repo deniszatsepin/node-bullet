@@ -1,4 +1,5 @@
 #include "RigidBody.h"
+#include "BoxShape.h"
 
 Persistent<FunctionTemplate> RigidBody::constructor;
 
@@ -28,30 +29,34 @@ RigidBody::Initialize(Handle<Object> target) {
 Handle<Value>
 RigidBody::New(const Arguments &args) {
 	HandleScope scope;
-	
-	RigidBody* rigidBody = new RigidBody(args[0]->ToNumber()->Value());
-	rigidBody->Wrap(args.This());
-	
-	return scope.Close(args.This());
-}
 
-RigidBody::RigidBody(double a_mass): ObjectWrap() {	
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(0.0, 0.0, 0.0));
-	
-	btScalar mass(a_mass);
+	double mass = args[0]->ToNumber()->Value();
+	Local<Object> shapeHandle = args[1]->ToObject();
+
+	btCollisionShape* shape;
+	if(BoxShape::constructor->HasInstance(shapeHandle)) {
+		shape = ObjectWrap::Unwrap<BoxShape>(shapeHandle)->_btBoxShape;
+	} else {
+		ThrowException(Exception::TypeError(String::New("Unknown shape type")));
+		return scope.Close(Undefined());
+	}
+
+	RigidBody* rigidBody = new RigidBody();
+
 	btVector3 localInertia(0, 0, 0);
-	
-	btDefaultMotionState* defaultMotionState = new btDefaultMotionState(transform);
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(2.0), btScalar(2.0), btScalar(2.0)));
-	groundShape->calculateLocalInertia(mass, localInertia);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, defaultMotionState, groundShape, localInertia);
-	_btRigidBody = new btRigidBody(rbInfo);
+	shape->calculateLocalInertia(mass, localInertia);
+
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, NULL, shape, localInertia);
+	rigidBody->_btRigidBody = new btRigidBody(rbInfo);
+	rigidBody->_shape = Persistent<Object>::New(shapeHandle);
+
+	rigidBody->Wrap(args.This());
+	return scope.Close(args.This());
 }
 
 RigidBody::~RigidBody() {
 	if(_btRigidBody) delete _btRigidBody;
+	_shape.Dispose();
 }
 
 Handle<Value>
@@ -60,8 +65,7 @@ RigidBody::GetPosition(const Arguments &args) {
 	
 	RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(args.This());
 	
-	btTransform transform;
-	rigidBody->_btRigidBody->getMotionState()->getWorldTransform(transform);
+	btTransform transform = rigidBody->_btRigidBody->getWorldTransform();
 	btVector3 origin = transform.getOrigin();
 	
 	Handle<Object> o = Object::New();
@@ -84,8 +88,7 @@ RigidBody::SetPosition(const Arguments &args) {
 	double y = args[1]->ToNumber()->Value();
 	double z = args[2]->ToNumber()->Value();
 	
-	btTransform transform;
-	rigidBody->_btRigidBody->getMotionState()->getWorldTransform(transform);
+	btTransform transform = rigidBody->_btRigidBody->getWorldTransform();
 	transform.setOrigin(btVector3(x, y, z));
 	rigidBody->_btRigidBody->setWorldTransform(transform);
 	return scope.Close(Undefined());
