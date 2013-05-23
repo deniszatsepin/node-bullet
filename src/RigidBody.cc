@@ -5,6 +5,9 @@
 OBJECT_INIT_START(RigidBody)
 	NODE_SET_PROTOTYPE_METHOD(constructor, "getPosition", GetPosition);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setPosition", SetPosition);
+	NODE_SET_PROTOTYPE_METHOD(constructor, "getRotation", GetRotation);
+	NODE_SET_PROTOTYPE_METHOD(constructor, "setRotation", SetRotation);
+
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setLinearVelocity", SetLinearVelocity);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "setGravity", SetGravity);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "applyImpulse", ApplyImpulse);
@@ -45,12 +48,9 @@ OBJECT_FUNCTION_START(RigidBody,GetPosition)
 	btVector3 origin = transform.getOrigin();
 
 	Handle<Object> o = Object::New();
-	Handle<Number> x_handle = Number::New(origin.getX());
-	Handle<Number> y_handle = Number::New(origin.getY());
-	Handle<Number> z_handle = Number::New(origin.getZ());
-	o->Set(String::New("x"), x_handle);
-	o->Set(String::New("y"), y_handle);
-	o->Set(String::New("z"), z_handle);
+	o->Set(String::New("x"), Number::New(origin.getX()));
+	o->Set(String::New("y"), Number::New(origin.getY()));
+	o->Set(String::New("z"), Number::New(origin.getZ()));
 	return scope.Close(o);
 OBJECT_FUNCTION_END()
 
@@ -64,6 +64,34 @@ OBJECT_FUNCTION_START(RigidBody,SetPosition)
 	self->_btRigidBody->setWorldTransform(transform);
 	return scope.Close(Undefined());
 OBJECT_FUNCTION_END()
+
+OBJECT_FUNCTION_START(RigidBody,GetRotation)
+	btTransform transform = self->_btRigidBody->getWorldTransform();
+	btQuaternion orientation = transform.getRotation();
+
+	Handle<Object> o = Object::New();
+	o->Set(String::New("x"), Number::New(orientation.getX()));
+	o->Set(String::New("y"), Number::New(orientation.getY()));
+	o->Set(String::New("z"), Number::New(orientation.getZ()));
+	o->Set(String::New("w"), Number::New(orientation.getW()));
+	return scope.Close(o);
+OBJECT_FUNCTION_END()
+
+OBJECT_FUNCTION_START(RigidBody,SetRotation)
+	btTransform transform = self->_btRigidBody->getWorldTransform();
+	transform.setRotation(btQuaternion(
+		args[0]->ToNumber()->Value(),
+		args[1]->ToNumber()->Value(),
+		args[2]->ToNumber()->Value(),
+		args[3]->ToNumber()->Value()
+	));
+	self->_btRigidBody->setWorldTransform(transform);
+	return scope.Close(Undefined());
+OBJECT_FUNCTION_END()
+
+
+
+
 
 OBJECT_FUNCTION_START(RigidBody,SetLinearVelocity)
 	self->_btRigidBody->setLinearVelocity(btVector3(
