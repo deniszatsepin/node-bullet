@@ -1,10 +1,9 @@
 #include "DiscreteDynamicsWorld.h"
 
 OBJECT_INIT_START(DiscreteDynamicsWorld)
-	NODE_SET_PROTOTYPE_METHOD(constructor, "getGravity", GetGravity);
-	NODE_SET_PROTOTYPE_METHOD(constructor, "setGravity", SetGravity);
-	NODE_SET_PROTOTYPE_METHOD(constructor, "addRigidBody", AddRigidBody);
-	NODE_SET_PROTOTYPE_METHOD(constructor, "stepSimulation", StepSimulation);
+	OBJECT_INIT_ACCESSOR(gravity)
+	OBJECT_INIT_FUNCTION(addRigidBody);
+	OBJECT_INIT_FUNCTION(step);
 OBJECT_INIT_END()
 
 OBJECT_NEW_START(DiscreteDynamicsWorld)
@@ -13,12 +12,15 @@ OBJECT_NEW_START(DiscreteDynamicsWorld)
 	self->_solver = Persistent<Object>::New(args[2]->ToObject());
 	self->_config = Persistent<Object>::New(args[3]->ToObject());
 
-	self->_btDiscreteDynamicsWorld = new btDiscreteDynamicsWorld(
-		ObjectWrap::Unwrap<CollisionDispatcher>(self->_dispatcher)->_btCollisionDispatcher,
-		ObjectWrap::Unwrap<DbvtBroadphase>(self->_broadphase)->_btDbvtBroadphase,
-		ObjectWrap::Unwrap<SequentialImpulseConstraintSolver>(self->_solver)->_btSequentialImpulseConstraintSolver,
-		ObjectWrap::Unwrap<DefaultCollisionConfiguration>(self->_config)->_btDefaultCollisionConfiguration
+	btDiscreteDynamicsWorld* world = new btDiscreteDynamicsWorld(
+		CollisionDispatcher::Unwrap(self->_dispatcher)->_btCollisionDispatcher,
+		DbvtBroadphase::Unwrap(self->_broadphase)->_btDbvtBroadphase,
+		SequentialImpulseConstraintSolver::Unwrap(self->_solver)->_btSequentialImpulseConstraintSolver,
+		DefaultCollisionConfiguration::Unwrap(self->_config)->_btDefaultCollisionConfiguration
 	);
+	self->_btDiscreteDynamicsWorld = world;
+	
+	world->getDispatchInfo().m_allowedCcdPenetration=0.0001f;
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(DiscreteDynamicsWorld)
@@ -34,36 +36,24 @@ OBJECT_DELETE_START(DiscreteDynamicsWorld)
 	}
 OBJECT_DELETE_END()
 
+OBJECT_GETTER_START(DiscreteDynamicsWorld,gravity)
+	result = Util::vectorToObj(self->_btDiscreteDynamicsWorld->getGravity());
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(DiscreteDynamicsWorld,gravity)
+	self->_btDiscreteDynamicsWorld->setGravity(Util::objToVector(value));
+OBJECT_SETTER_END()
 
-OBJECT_FUNCTION_START(DiscreteDynamicsWorld,GetGravity)
-	btVector3 gravity = self->_btDiscreteDynamicsWorld->getGravity();
-	return scope.Close(Number::New(gravity.getY()));
-OBJECT_FUNCTION_END()
-
-OBJECT_FUNCTION_START(DiscreteDynamicsWorld,SetGravity)
-	self->_btDiscreteDynamicsWorld->setGravity(btVector3(
-		args[0]->ToNumber()->Value(),
-		args[1]->ToNumber()->Value(),
-		args[2]->ToNumber()->Value()
-	));
-	return scope.Close(Undefined());
-OBJECT_FUNCTION_END()
-
-OBJECT_FUNCTION_START(DiscreteDynamicsWorld,AddRigidBody)
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,addRigidBody)
 	Local<Object> obj = args[0]->ToObject();
-	RigidBody* rigidBody = ObjectWrap::Unwrap<RigidBody>(obj);
+	RigidBody* rigidBody = RigidBody::Unwrap(obj);
 
 	self->_btDiscreteDynamicsWorld->addRigidBody(rigidBody->_btRigidBody);
 	self->_bodies.push_back(Persistent<Object>::New(obj));
-
-	return scope.Close(Undefined());
 OBJECT_FUNCTION_END()
 
-OBJECT_FUNCTION_START(DiscreteDynamicsWorld,StepSimulation)
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,step)
 	self->_btDiscreteDynamicsWorld->stepSimulation(
 		args[0]->ToNumber()->Value(),
 		0
 	);
-	
-	return scope.Close(Undefined());
 OBJECT_FUNCTION_END()

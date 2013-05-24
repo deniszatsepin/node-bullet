@@ -3,15 +3,12 @@
 #include "btBulletDynamicsCommon.h"
 
 OBJECT_DEF_START(RigidBody)
-	OBJECT_DEF_FUNCTION(GetPosition);
-	OBJECT_DEF_FUNCTION(SetPosition);
-	OBJECT_DEF_FUNCTION(GetRotation);
-	OBJECT_DEF_FUNCTION(SetRotation);
-
-	OBJECT_DEF_FUNCTION(SetLinearVelocity);
-	OBJECT_DEF_FUNCTION(SetGravity);
-	OBJECT_DEF_FUNCTION(ApplyImpulse);
-	OBJECT_DEF_FUNCTION(ApplyCentralImpulse);
+	OBJECT_DEF_ACCESSOR(position);
+	OBJECT_DEF_ACCESSOR(quaternion);
+	OBJECT_DEF_ACCESSOR(velocity);
+	OBJECT_DEF_ACCESSOR(gravity);
+	OBJECT_DEF_FUNCTION(applyImpulse);
+	OBJECT_DEF_FUNCTION(applyCentralImpulse);
 
 	btRigidBody* _btRigidBody;
 	Persistent<Object> _shape;

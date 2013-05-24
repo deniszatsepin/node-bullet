@@ -10,12 +10,12 @@
 #include "RigidBody.h"
 
 OBJECT_DEF_START(DiscreteDynamicsWorld)
-	OBJECT_DEF_FUNCTION(GetGravity);
-	OBJECT_DEF_FUNCTION(SetGravity);
-	OBJECT_DEF_FUNCTION(AddRigidBody);
-	OBJECT_DEF_FUNCTION(StepSimulation);
+	OBJECT_DEF_ACCESSOR(gravity);
+	OBJECT_DEF_FUNCTION(addRigidBody);
+	OBJECT_DEF_FUNCTION(step);
 
 	btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
+
 	Persistent<Object> _dispatcher;
 	Persistent<Object> _broadphase;
 	Persistent<Object> _solver;

@@ -13,7 +13,7 @@ var world = new Bullet.DiscreteDynamicsWorld(
 	collisionConfig
 );
 
-world.setGravity(0, -9.81, 0);
+world.gravity = {x:0, y:-9.81, z:0};
 
 var blocks = {};
 
@@ -23,8 +23,8 @@ for(var i = 0; i < rows; i++) {
 		var shape = new Bullet.BoxShape();
 		var block = new Bullet.RigidBody(1,shape);
 		world.addRigidBody(block);
-		block.setPosition(i * 1, 0, j * 1);
-		console.log(block.getPosition());
+		block.position = {x:i*1, y:0, z:j*1};
+		console.log(block.position);
 		blocks[i+':'+j] = block;
 	}
 	console.log("added "+((i+1)*cols)+" of "+(rows*cols)+" blocks");
@@ -33,9 +33,9 @@ console.log("blocks added");
 
 var ticks = 1000;
 for(var i = 0; i < ticks; i++) {
-	world.stepSimulation(1/120);
+	world.step(1/120);
 	if(i%100 == 0) console.log("tick "+i+" of "+ticks);
-	console.log(blocks['10:10'].getPosition());
+	console.log(blocks['10:10'].position);
 }
 
 console.log('done');
