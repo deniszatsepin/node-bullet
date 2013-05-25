@@ -13,9 +13,5 @@ OBJECT_DELETE_START(ConvexHullShape)
 OBJECT_DELETE_END()
 
 OBJECT_FUNCTION_START(ConvexHullShape,addPoint)
-	self->_btConvexHullShape->addPoint(btVector3(
-		args[0]->ToNumber()->Value(),
-		args[1]->ToNumber()->Value(),
-		args[2]->ToNumber()->Value()
-	));
+	self->_btConvexHullShape->addPoint(Util::objToVector(args[0]));
 OBJECT_FUNCTION_END()

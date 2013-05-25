@@ -3,6 +3,7 @@
 OBJECT_INIT_START(DiscreteDynamicsWorld)
 	OBJECT_INIT_ACCESSOR(gravity)
 	OBJECT_INIT_FUNCTION(addRigidBody);
+	OBJECT_INIT_FUNCTION(removeRigidBody);
 	OBJECT_INIT_FUNCTION(step);
 	OBJECT_INIT_FUNCTION(sweep);
 OBJECT_INIT_END()
@@ -31,8 +32,8 @@ OBJECT_DELETE_START(DiscreteDynamicsWorld)
 	_solver.Dispose();
 	_config.Dispose();
 
-	for(std::list< Persistent<Object> >::iterator it=_bodies.begin(); it != _bodies.end(); ++it)
-		(*it).Dispose();
+	for(std::map< RigidBody*, Persistent<Object> >::iterator it=_bodies.begin(); it != _bodies.end(); ++it)
+		it->second.Dispose();
 OBJECT_DELETE_END()
 
 OBJECT_GETTER_START(DiscreteDynamicsWorld,gravity)
@@ -45,9 +46,15 @@ OBJECT_SETTER_END()
 OBJECT_FUNCTION_START(DiscreteDynamicsWorld,addRigidBody)
 	Local<Object> obj = args[0]->ToObject();
 	RigidBody* rigidBody = RigidBody::Unwrap(obj);
-
 	self->world->addRigidBody(rigidBody->body);
-	self->_bodies.push_back(Persistent<Object>::New(obj));
+	self->_bodies[rigidBody] = Persistent<Object>::New(obj);
+OBJECT_FUNCTION_END()
+
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,removeRigidBody)
+	RigidBody* rigidBody = RigidBody::Unwrap(args[0]);
+	self->world->removeRigidBody(rigidBody->body);
+	self->_bodies[rigidBody].Dispose();
+	self->_bodies.erase(rigidBody);
 OBJECT_FUNCTION_END()
 
 OBJECT_FUNCTION_START(DiscreteDynamicsWorld,step)

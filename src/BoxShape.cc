@@ -4,7 +4,7 @@ OBJECT_INIT_START(BoxShape)
 OBJECT_INIT_END()
 
 OBJECT_NEW_START(BoxShape)
-	self->_btBoxShape = new btBoxShape(btVector3(btScalar(1.0),btScalar(1.0),btScalar(1.0)));
+	self->_btBoxShape = new btBoxShape(Util::objToVector(args[0]));
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(BoxShape)

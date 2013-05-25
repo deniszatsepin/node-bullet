@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "btBulletDynamicsCommon.h"
 
-#include <list>
+#include <map>
 #include "CollisionDispatcher.h"
 #include "DbvtBroadphase.h"
 #include "SequentialImpulseConstraintSolver.h"
@@ -12,6 +12,7 @@
 OBJECT_DEF_START(DiscreteDynamicsWorld)
 	OBJECT_DEF_ACCESSOR(gravity);
 	OBJECT_DEF_FUNCTION(addRigidBody);
+	OBJECT_DEF_FUNCTION(removeRigidBody);
 	OBJECT_DEF_FUNCTION(step);
 	OBJECT_DEF_FUNCTION(sweep);
 
@@ -21,5 +22,5 @@ OBJECT_DEF_START(DiscreteDynamicsWorld)
 	Persistent<Object> _broadphase;
 	Persistent<Object> _solver;
 	Persistent<Object> _config;
-	std::list< Persistent<Object> > _bodies;
+	std::map< RigidBody*, Persistent<Object> > _bodies;
 OBJECT_DEF_END()
