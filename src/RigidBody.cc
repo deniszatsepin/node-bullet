@@ -87,12 +87,16 @@ OBJECT_GETTER_START(RigidBody,kinematic)
 	);
 OBJECT_GETTER_END()
 OBJECT_SETTER_START(RigidBody,kinematic)
+	bool state = value->ToBoolean()->Value();
+
 	int flags = self->body->getCollisionFlags();
-	if(value->ToBoolean()->Value())
+	if(state)
 		flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
 	else
 		flags &= ~(btCollisionObject::CF_KINEMATIC_OBJECT);
+
 	self->body->setCollisionFlags(flags);
+	if(!state) self->body->activate();
 OBJECT_SETTER_END()
 
 
