@@ -7,8 +7,12 @@ OBJECT_INIT_START(RigidBody)
 	OBJECT_INIT_ACCESSOR(quaternion);
 	OBJECT_INIT_ACCESSOR(velocity);
 	OBJECT_INIT_ACCESSOR(gravity);
+	OBJECT_INIT_ACCESSOR(kinematic);
+
 	OBJECT_INIT_FUNCTION(applyImpulse);
 	OBJECT_INIT_FUNCTION(applyCentralImpulse);
+	OBJECT_INIT_FUNCTION(setLinearFactor);
+	OBJECT_INIT_FUNCTION(setAngularFactor);
 OBJECT_INIT_END()
 
 OBJECT_NEW_START(RigidBody)
@@ -29,62 +33,83 @@ OBJECT_NEW_START(RigidBody)
 	shape->calculateLocalInertia(mass, localInertia);
 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, NULL, shape, localInertia);
-	self->_btRigidBody = new btRigidBody(rbInfo);
+	self->body = new btRigidBody(rbInfo);
 	self->_shape = Persistent<Object>::New(shapeHandle);
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(RigidBody)
-	delete _btRigidBody;
+	delete body;
 	_shape.Dispose();
 OBJECT_DELETE_END()
 
 
 
 OBJECT_GETTER_START(RigidBody,position)
-	btTransform transform = self->_btRigidBody->getWorldTransform();
+	btTransform transform = self->body->getWorldTransform();
 	btVector3 origin = transform.getOrigin();
 	result = Util::vectorToObj(origin);
 OBJECT_GETTER_END()
 OBJECT_SETTER_START(RigidBody,position)
-	btTransform transform = self->_btRigidBody->getWorldTransform();
+	btTransform transform = self->body->getWorldTransform();
 	transform.setOrigin(Util::objToVector(value));
-	self->_btRigidBody->setWorldTransform(transform);
+	self->body->setWorldTransform(transform);
 OBJECT_SETTER_END()
 
 OBJECT_GETTER_START(RigidBody,quaternion)
-	btTransform transform = self->_btRigidBody->getWorldTransform();
+	btTransform transform = self->body->getWorldTransform();
 	btQuaternion quaternion = transform.getRotation();
 	result = Util::quaternionToObj(quaternion);
 OBJECT_GETTER_END()
 OBJECT_SETTER_START(RigidBody,quaternion)
-	btTransform transform = self->_btRigidBody->getWorldTransform();
+	btTransform transform = self->body->getWorldTransform();
 	transform.setRotation(Util::objToQuaternion(value));
-	self->_btRigidBody->setWorldTransform(transform);
+	self->body->setWorldTransform(transform);
 OBJECT_SETTER_END()
 
 OBJECT_GETTER_START(RigidBody,velocity)
-	result = Util::vectorToObj(self->_btRigidBody->getLinearVelocity());
+	result = Util::vectorToObj(self->body->getLinearVelocity());
 OBJECT_GETTER_END()
 OBJECT_SETTER_START(RigidBody,velocity)
-	self->_btRigidBody->setLinearVelocity(Util::objToVector(value));
+	self->body->setLinearVelocity(Util::objToVector(value));
 OBJECT_SETTER_END()
 
 
 OBJECT_GETTER_START(RigidBody,gravity)
-	result = Util::vectorToObj(self->_btRigidBody->getGravity());
+	result = Util::vectorToObj(self->body->getGravity());
 OBJECT_GETTER_END()
 OBJECT_SETTER_START(RigidBody,gravity)
-	self->_btRigidBody->setGravity(Util::objToVector(value));
+	self->body->setGravity(Util::objToVector(value));
+OBJECT_SETTER_END()
+
+OBJECT_GETTER_START(RigidBody,kinematic)
+	result = Boolean::New(
+		(self->body->getCollisionFlags() & btCollisionObject::CF_KINEMATIC_OBJECT) != 0
+	);
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,kinematic)
+	int flags = self->body->getCollisionFlags();
+	if(value->ToBoolean()->Value())
+		flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
+	else
+		flags &= ~(btCollisionObject::CF_KINEMATIC_OBJECT);
+	self->body->setCollisionFlags(flags);
 OBJECT_SETTER_END()
 
 
 OBJECT_FUNCTION_START(RigidBody,applyCentralImpulse)
-	self->_btRigidBody->applyCentralImpulse(Util::objToVector(args[0]));
+	self->body->applyCentralImpulse(Util::objToVector(args[0]));
 OBJECT_FUNCTION_END()
 
 OBJECT_FUNCTION_START(RigidBody,applyImpulse)
-	self->_btRigidBody->applyImpulse(
+	self->body->applyImpulse(
 		Util::objToVector(args[0]),
 		Util::objToVector(args[1])
 	);
+OBJECT_FUNCTION_END()
+
+OBJECT_FUNCTION_START(RigidBody,setLinearFactor)
+	self->body->setLinearFactor(Util::objToVector(args[0]));
+OBJECT_FUNCTION_END()
+OBJECT_FUNCTION_START(RigidBody,setAngularFactor)
+	self->body->setAngularFactor(Util::objToVector(args[0]));
 OBJECT_FUNCTION_END()

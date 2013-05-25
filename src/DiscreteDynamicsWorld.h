@@ -13,8 +13,9 @@ OBJECT_DEF_START(DiscreteDynamicsWorld)
 	OBJECT_DEF_ACCESSOR(gravity);
 	OBJECT_DEF_FUNCTION(addRigidBody);
 	OBJECT_DEF_FUNCTION(step);
+	OBJECT_DEF_FUNCTION(sweep);
 
-	btDiscreteDynamicsWorld* _btDiscreteDynamicsWorld;
+	btDiscreteDynamicsWorld* world;
 
 	Persistent<Object> _dispatcher;
 	Persistent<Object> _broadphase;
