@@ -153,6 +153,10 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 		// collision at the start position
 		result = String::New("start");
 
+	} else if(startv == endv) {
+
+		result = String::New("end");
+
 	} else {
 
 		SweepCallback callback(body, up, minSlopeDot);
