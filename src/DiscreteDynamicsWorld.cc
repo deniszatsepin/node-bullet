@@ -75,6 +75,23 @@ OBJECT_FUNCTION_END()
 
 // Sweeper
 
+struct ContactCallback : public btCollisionWorld::ContactResultCallback
+{
+public:
+	bool contacted = false;
+
+	virtual btScalar addSingleResult(
+		btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap,
+		int partId0,int index0,
+		const btCollisionObjectWrapper* colObj1Wrap,
+		int partId1,int index1
+	) {
+		contacted = true;
+		return btScalar(1.0);
+	}
+};
+
 class SweepCallback : public btCollisionWorld::ClosestConvexResultCallback
 {
 public:
@@ -83,8 +100,7 @@ public:
 	, m_me(me)
 	, m_up(up)
 	, m_minSlopeDot(minSlopeDot)
-	{
-	}
+	{}
 
 	virtual btScalar addSingleResult(btCollisionWorld::LocalConvexResult& convexResult,bool normalInWorldSpace)
 	{
@@ -117,22 +133,45 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 	btVector3 up = Util::objToVector(args[3]);
 	btScalar minSlopeDot = args[4]->ToNumber()->Value();
 	
+	btRigidBody* body = rigidBody->body;
+	btConvexShape* shape = (btConvexShape*)body->getCollisionShape();
+
 	btTransform start, end;
 	start.setIdentity();
 	start.setOrigin(startv);
 	end.setIdentity();
 	end.setOrigin(endv);
+	
+	// check for collisions at the start pos
+	ContactCallback ccallback;
+	btTransform orig = body->getWorldTransform();
+	body->setWorldTransform(start);
+	self->world->contactTest(body, ccallback);
+	body->setWorldTransform(orig);
+	if(ccallback.contacted) {
 
-	SweepCallback callback(rigidBody->body, up, minSlopeDot);
-	self->world->convexSweepTest((btConvexShape*)(rigidBody->body->getCollisionShape()), start, end, callback);
+		// collision at the start position
+		result = String::New("start");
 
-	if(callback.hasHit()) {
-		Handle<Object> o = Object::New();
-		o->Set(String::New("dot"), Number::New(callback.m_hitNormalWorld.dot(up)));
-		o->Set(String::New("fraction"), Number::New(callback.m_closestHitFraction));
-		result = o;
 	} else {
-		result = Boolean::New(false);
+
+		SweepCallback callback(body, up, minSlopeDot);
+		self->world->convexSweepTest(
+			shape, start, end, callback,
+			self->world->getDispatchInfo().m_allowedCcdPenetration
+		);
+
+		if(callback.hasHit()) {
+			// collision in the sweep
+			Handle<Object> o = Object::New();
+			o->Set(String::New("dot"), Number::New(callback.m_hitNormalWorld.dot(up)));
+			o->Set(String::New("fraction"), Number::New(callback.m_closestHitFraction));
+			result = o;
+		} else {
+			// no collisions anywhere
+			result = String::New("end");
+		}
+	
 	}
 OBJECT_FUNCTION_END()
 
