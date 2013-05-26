@@ -100,10 +100,9 @@ OBJECT_SETTER_START(RigidBody,kinematic)
 	if(!state) self->body->activate();
 OBJECT_SETTER_END()
 
-OBJECT_FUNCTION_START(RigidBody,kinematic)
+OBJECT_FUNCTION_START(RigidBody,activate)
 	self->body->activate();
 OBJECT_FUNCTION_END()
-
 
 OBJECT_FUNCTION_START(RigidBody,applyCentralImpulse)
 	self->body->applyCentralImpulse(Util::objToVector(args[0]));
