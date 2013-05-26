@@ -9,6 +9,7 @@ OBJECT_INIT_START(RigidBody)
 	OBJECT_INIT_ACCESSOR(gravity);
 	OBJECT_INIT_ACCESSOR(kinematic);
 
+	OBJECT_INIT_FUNCTION(activate);
 	OBJECT_INIT_FUNCTION(applyImpulse);
 	OBJECT_INIT_FUNCTION(applyCentralImpulse);
 	OBJECT_INIT_FUNCTION(setLinearFactor);
@@ -98,6 +99,10 @@ OBJECT_SETTER_START(RigidBody,kinematic)
 	self->body->setCollisionFlags(flags);
 	if(!state) self->body->activate();
 OBJECT_SETTER_END()
+
+OBJECT_FUNCTION_START(RigidBody,kinematic)
+	self->body->activate();
+OBJECT_FUNCTION_END()
 
 
 OBJECT_FUNCTION_START(RigidBody,applyCentralImpulse)
