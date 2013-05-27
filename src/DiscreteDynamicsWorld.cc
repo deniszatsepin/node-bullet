@@ -74,7 +74,7 @@ OBJECT_FUNCTION_END()
 
 
 // Sweeper
-
+/*
 struct ContactCallback : public btCollisionWorld::ContactResultCallback
 {
 public:
@@ -91,16 +91,23 @@ public:
 		return btScalar(1.0);
 	}
 };
-
+*/
 class SweepCallback : public btCollisionWorld::ClosestConvexResultCallback
 {
 public:
-	SweepCallback(btCollisionObject* me, const btVector3& up, btScalar minSlopeDot)
+	btCollisionObject* m_me;
+	btVector3 m_up;
+	btScalar m_minSlopeDot;
+	btScalar m_maxSlopeDot;
+
+public:
+	SweepCallback()
 	: btCollisionWorld::ClosestConvexResultCallback(btVector3(0.0, 0.0, 0.0), btVector3(0.0, 0.0, 0.0))
-	, m_me(me)
-	, m_up(up)
-	, m_minSlopeDot(minSlopeDot)
-	{}
+	{
+		m_me = NULL;
+		m_minSlopeDot = -2;
+		m_maxSlopeDot = -2;
+	}
 
 	virtual btScalar addSingleResult(btCollisionWorld::LocalConvexResult& convexResult,bool normalInWorldSpace)
 	{
@@ -114,16 +121,20 @@ public:
 			hitNormalWorld = convexResult.m_hitCollisionObject->getWorldTransform().getBasis()*convexResult.m_hitNormalLocal;
 
 		btScalar dotUp = m_up.dot(hitNormalWorld);
-		if (dotUp < m_minSlopeDot) {
-			return btScalar(1.0);
+		if(m_minSlopeDot != -2 && m_maxSlopeDot != -2 && m_maxSlopeDot < m_minSlopeDot) {
+			// excluded zone
+			if(dotUp > m_maxSlopeDot && dotUp < m_minSlopeDot)
+				return btScalar(1.0);
+		} else {
+			// min and max
+			if(m_minSlopeDot != -2 && dotUp < m_minSlopeDot)
+				return btScalar(1.0);
+			if(m_maxSlopeDot != -2 && dotUp > m_maxSlopeDot)
+				return btScalar(1.0);
 		}
 
 		return ClosestConvexResultCallback::addSingleResult(convexResult, normalInWorldSpace);
 	}
-protected:
-	btCollisionObject* m_me;
-	const btVector3 m_up;
-	btScalar m_minSlopeDot;
 };
 
 OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
@@ -132,6 +143,7 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 	btVector3 endv = Util::objToVector(args[2]);
 	btVector3 up = Util::objToVector(args[3]);
 	btScalar minSlopeDot = args[4]->ToNumber()->Value();
+	btScalar maxSlopeDot = args[5]->ToNumber()->Value();
 	
 	btRigidBody* body = rigidBody->body;
 	btConvexShape* shape = (btConvexShape*)body->getCollisionShape();
@@ -143,7 +155,7 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 	end.setOrigin(endv);
 	
 	// check for collisions at the start pos
-	ContactCallback ccallback;
+/*	ContactCallback ccallback;
 	btTransform orig = body->getWorldTransform();
 	body->setWorldTransform(start);
 	self->world->contactTest(body, ccallback);
@@ -158,8 +170,12 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 		result = String::New("end");
 
 	} else {
-
-		SweepCallback callback(body, up, minSlopeDot);
+*/
+		SweepCallback callback;
+		callback.m_me = body;
+		callback.m_up = up;
+		callback.m_minSlopeDot = minSlopeDot;
+		callback.m_maxSlopeDot = maxSlopeDot;
 		self->world->convexSweepTest(
 			shape, start, end, callback,
 			self->world->getDispatchInfo().m_allowedCcdPenetration
@@ -176,6 +192,6 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 			result = String::New("end");
 		}
 	
-	}
+//	}
 OBJECT_FUNCTION_END()
 

@@ -8,6 +8,7 @@ OBJECT_INIT_START(RigidBody)
 	OBJECT_INIT_ACCESSOR(velocity);
 	OBJECT_INIT_ACCESSOR(gravity);
 	OBJECT_INIT_ACCESSOR(kinematic);
+	OBJECT_INIT_ACCESSOR(friction);
 
 	OBJECT_INIT_FUNCTION(activate);
 	OBJECT_INIT_FUNCTION(applyImpulse);
@@ -98,6 +99,13 @@ OBJECT_SETTER_START(RigidBody,kinematic)
 
 	self->body->setCollisionFlags(flags);
 	if(!state) self->body->activate();
+OBJECT_SETTER_END()
+
+OBJECT_GETTER_START(RigidBody,friction)
+	result = Number::New(self->body->getFriction());
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,friction)
+	self->body->setFriction(value->ToNumber()->Value());
 OBJECT_SETTER_END()
 
 OBJECT_FUNCTION_START(RigidBody,activate)
