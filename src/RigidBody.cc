@@ -1,6 +1,7 @@
 #include "RigidBody.h"
 #include "BoxShape.h"
 #include "ConvexHullShape.h"
+#include "TriangleMeshShape.h"
 
 OBJECT_INIT_START(RigidBody)
 	OBJECT_INIT_ACCESSOR(position);
