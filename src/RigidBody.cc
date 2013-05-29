@@ -23,10 +23,13 @@ OBJECT_NEW_START(RigidBody)
 	Local<Object> shapeHandle = args[1]->ToObject();
 
 	btCollisionShape* shape;
+	bool enableCcd = false;
 	if(BoxShape::HasInstance(shapeHandle)) {
 		shape = BoxShape::Unwrap(shapeHandle)->_btBoxShape;
+		enableCcd = true;
 	} else if(ConvexHullShape::HasInstance(shapeHandle)) {
 		shape = ConvexHullShape::Unwrap(shapeHandle)->_btConvexHullShape;
+		enableCcd = true;
 	} else if(TriangleMeshShape::HasInstance(shapeHandle)) {
 		shape = TriangleMeshShape::Unwrap(shapeHandle)->shape;
 	} else {
@@ -40,6 +43,11 @@ OBJECT_NEW_START(RigidBody)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, NULL, shape, localInertia);
 	self->body = new btRigidBody(rbInfo);
 	self->_shape = Persistent<Object>::New(shapeHandle);
+	
+	if(enableCcd) {
+		self->body->setCcdMotionThreshold(0.2);
+		self->body->setCcdSweptSphereRadius(0.5f);
+	}
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(RigidBody)
