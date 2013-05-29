@@ -8,6 +8,7 @@
 #include "DiscreteDynamicsWorld.h"
 #include "BoxShape.h"
 #include "ConvexHullShape.h"
+#include "TriangleMeshShape.h"
 #include "Transform.h"
 #include "RigidBody.h"
 
@@ -28,6 +29,7 @@ extern "C" {
 		DiscreteDynamicsWorld::Initialize(target);
 		BoxShape::Initialize(target);
 		ConvexHullShape::Initialize(target);
+		TriangleMeshShape::Initialize(target);
 		Transform::Initialize(target);
 		RigidBody::Initialize(target);
 	}

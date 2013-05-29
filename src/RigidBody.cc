@@ -26,6 +26,8 @@ OBJECT_NEW_START(RigidBody)
 		shape = BoxShape::Unwrap(shapeHandle)->_btBoxShape;
 	} else if(ConvexHullShape::HasInstance(shapeHandle)) {
 		shape = ConvexHullShape::Unwrap(shapeHandle)->_btConvexHullShape;
+	} else if(TriangleMeshShape::HasInstance(shapeHandle)) {
+		shape = TriangleMeshShape::Unwrap(shapeHandle)->shape;
 	} else {
 		ThrowException(Exception::TypeError(String::New("Unknown shape type")));
 		return scope.Close(Undefined());
