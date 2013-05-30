@@ -6,9 +6,13 @@
 #include "DbvtBroadphase.h"
 #include "SequentialImpulseConstraintSolver.h"
 #include "DiscreteDynamicsWorld.h"
+
 #include "BoxShape.h"
+#include "SphereShape.h"
+#include "CylinderShape.h"
 #include "ConvexHullShape.h"
 #include "TriangleMeshShape.h"
+
 #include "Transform.h"
 #include "RigidBody.h"
 

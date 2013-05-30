@@ -1,5 +1,7 @@
 #include "RigidBody.h"
 #include "BoxShape.h"
+#include "SphereShape.h"
+#include "CylinderShape.h"
 #include "ConvexHullShape.h"
 #include "TriangleMeshShape.h"
 
@@ -23,15 +25,18 @@ OBJECT_NEW_START(RigidBody)
 	Local<Object> shapeHandle = args[1]->ToObject();
 
 	btCollisionShape* shape;
-	bool enableCcd = false;
+	bool enableCcd = true;
 	if(BoxShape::HasInstance(shapeHandle)) {
 		shape = BoxShape::Unwrap(shapeHandle)->_btBoxShape;
-		enableCcd = true;
+	} else if(SphereShape::HasInstance(shapeHandle)) {
+		shape = SphereShape::Unwrap(shapeHandle)->shape;
+	} else if(CylinderShape::HasInstance(shapeHandle)) {
+		shape = CylinderShape::Unwrap(shapeHandle)->shape;
 	} else if(ConvexHullShape::HasInstance(shapeHandle)) {
 		shape = ConvexHullShape::Unwrap(shapeHandle)->_btConvexHullShape;
-		enableCcd = true;
 	} else if(TriangleMeshShape::HasInstance(shapeHandle)) {
 		shape = TriangleMeshShape::Unwrap(shapeHandle)->shape;
+		enableCcd = false;
 	} else {
 		ThrowException(Exception::TypeError(String::New("Unknown shape type")));
 		return scope.Close(Undefined());
