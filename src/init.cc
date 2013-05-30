@@ -27,9 +27,13 @@ extern "C" {
 		DbvtBroadphase::Initialize(target);
 		SequentialImpulseConstraintSolver::Initialize(target);
 		DiscreteDynamicsWorld::Initialize(target);
+
 		BoxShape::Initialize(target);
+		SphereShape::Initialize(target);
+		CylinderShape::Initialize(target);
 		ConvexHullShape::Initialize(target);
 		TriangleMeshShape::Initialize(target);
+
 		Transform::Initialize(target);
 		RigidBody::Initialize(target);
 	}
