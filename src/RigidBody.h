@@ -5,6 +5,8 @@
 OBJECT_DEF_START(RigidBody)
 	OBJECT_DEF_ACCESSOR(ccdMotionThreshold);
 	OBJECT_DEF_ACCESSOR(ccdSweptSphereRadius);
+	OBJECT_DEF_ACCESSOR(angularDamping);
+	OBJECT_DEF_ACCESSOR(linearDamping);
 	OBJECT_DEF_ACCESSOR(position);
 	OBJECT_DEF_ACCESSOR(quaternion);
 	OBJECT_DEF_ACCESSOR(velocity);

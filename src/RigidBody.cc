@@ -6,6 +6,10 @@
 #include "TriangleMeshShape.h"
 
 OBJECT_INIT_START(RigidBody)
+	OBJECT_INIT_ACCESSOR(ccdMotionThreshold);
+	OBJECT_INIT_ACCESSOR(ccdSweptSphereRadius);
+	OBJECT_INIT_ACCESSOR(angularDamping);
+	OBJECT_INIT_ACCESSOR(linearDamping);
 	OBJECT_INIT_ACCESSOR(position);
 	OBJECT_INIT_ACCESSOR(quaternion);
 	OBJECT_INIT_ACCESSOR(velocity);
@@ -64,6 +68,20 @@ OBJECT_GETTER_START(RigidBody,ccdSweptSphereRadius)
 OBJECT_GETTER_END()
 OBJECT_SETTER_START(RigidBody,ccdSweptSphereRadius)
 	self->body->setCcdSweptSphereRadius(value->ToNumber()->Value());
+OBJECT_SETTER_END()
+
+OBJECT_GETTER_START(RigidBody,angularDamping)
+	result = Number::New(self->body->getAngularDamping());
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,angularDamping)
+	self->body->setDamping(self->body->getLinearDamping(),value->ToNumber()->Value());
+OBJECT_SETTER_END()
+
+OBJECT_GETTER_START(RigidBody,linearDamping)
+	result = Number::New(self->body->getLinearDamping());
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,linearDamping)
+	self->body->setDamping(value->ToNumber()->Value(),self->body->getAngularDamping());
 OBJECT_SETTER_END()
 
 OBJECT_GETTER_START(RigidBody,position)
