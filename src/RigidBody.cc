@@ -29,6 +29,7 @@ OBJECT_NEW_START(RigidBody)
 	Local<Object> shapeHandle = args[1]->ToObject();
 
 	btCollisionShape* shape;
+	bool customMaterialCallback = false;
 	if(BoxShape::HasInstance(shapeHandle)) {
 		shape = BoxShape::Unwrap(shapeHandle)->_btBoxShape;
 	} else if(SphereShape::HasInstance(shapeHandle)) {
@@ -39,6 +40,7 @@ OBJECT_NEW_START(RigidBody)
 		shape = ConvexHullShape::Unwrap(shapeHandle)->_btConvexHullShape;
 	} else if(TriangleMeshShape::HasInstance(shapeHandle)) {
 		shape = TriangleMeshShape::Unwrap(shapeHandle)->shape;
+		customMaterialCallback = true;
 	} else {
 		ThrowException(Exception::TypeError(String::New("Unknown shape type")));
 		return scope.Close(Undefined());
@@ -50,6 +52,14 @@ OBJECT_NEW_START(RigidBody)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, NULL, shape, localInertia);
 	self->body = new btRigidBody(rbInfo);
 	self->_shape = Persistent<Object>::New(shapeHandle);
+
+	if(customMaterialCallback) {
+		self->body->setCollisionFlags(
+			self->body->getCollisionFlags()
+			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK
+		);
+	}
+
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(RigidBody)
