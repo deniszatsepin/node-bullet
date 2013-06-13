@@ -25,7 +25,6 @@ OBJECT_NEW_START(RigidBody)
 	Local<Object> shapeHandle = args[1]->ToObject();
 
 	btCollisionShape* shape;
-	bool enableCcd = true;
 	if(BoxShape::HasInstance(shapeHandle)) {
 		shape = BoxShape::Unwrap(shapeHandle)->_btBoxShape;
 	} else if(SphereShape::HasInstance(shapeHandle)) {
@@ -36,7 +35,6 @@ OBJECT_NEW_START(RigidBody)
 		shape = ConvexHullShape::Unwrap(shapeHandle)->_btConvexHullShape;
 	} else if(TriangleMeshShape::HasInstance(shapeHandle)) {
 		shape = TriangleMeshShape::Unwrap(shapeHandle)->shape;
-		enableCcd = false;
 	} else {
 		ThrowException(Exception::TypeError(String::New("Unknown shape type")));
 		return scope.Close(Undefined());
@@ -48,11 +46,6 @@ OBJECT_NEW_START(RigidBody)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, NULL, shape, localInertia);
 	self->body = new btRigidBody(rbInfo);
 	self->_shape = Persistent<Object>::New(shapeHandle);
-	
-	if(enableCcd) {
-		self->body->setCcdMotionThreshold(0.2);
-		self->body->setCcdSweptSphereRadius(0.5f);
-	}
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(RigidBody)
@@ -61,6 +54,17 @@ OBJECT_DELETE_START(RigidBody)
 OBJECT_DELETE_END()
 
 
+OBJECT_GETTER_START(RigidBody,ccdMotionThreshold)
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,ccdMotionThreshold)
+	self->body->setCcdMotionThreshold(value->ToNumber()->Value());
+OBJECT_SETTER_END()
+
+OBJECT_GETTER_START(RigidBody,ccdSweptSphereRadius)
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,ccdSweptSphereRadius)
+	self->body->setCcdSweptSphereRadius(value->ToNumber()->Value());
+OBJECT_SETTER_END()
 
 OBJECT_GETTER_START(RigidBody,position)
 	btTransform transform = self->body->getWorldTransform();
