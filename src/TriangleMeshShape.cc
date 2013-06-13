@@ -33,6 +33,11 @@ OBJECT_NEW_START(TriangleMeshShape)
 	);
 
 	self->shape = new btBvhTriangleMeshShape(self->vertexArray,true);
+
+	// this is needed for btAdjustInternalEdgeContacts to calculate
+	// normals later
+	btTriangleInfoMap* triangleInfoMap = new btTriangleInfoMap();
+	btGenerateInternalEdgeInfo(self->shape,triangleInfoMap);
 OBJECT_NEW_END()
 
 OBJECT_DELETE_START(TriangleMeshShape)
