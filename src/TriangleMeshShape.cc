@@ -1,4 +1,5 @@
 #include "TriangleMeshShape.h"
+#include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
 
 OBJECT_INIT_START(TriangleMeshShape)
 OBJECT_INIT_END()
