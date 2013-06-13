@@ -12,6 +12,7 @@ OBJECT_DEF_START(RigidBody)
 	OBJECT_DEF_ACCESSOR(velocity);
 	OBJECT_DEF_ACCESSOR(gravity);
 	OBJECT_DEF_ACCESSOR(kinematic);
+	OBJECT_DEF_ACCESSOR(restitution);
 	OBJECT_DEF_ACCESSOR(friction);
 
 	OBJECT_DEF_FUNCTION(activate);

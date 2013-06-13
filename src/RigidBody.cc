@@ -15,6 +15,7 @@ OBJECT_INIT_START(RigidBody)
 	OBJECT_INIT_ACCESSOR(velocity);
 	OBJECT_INIT_ACCESSOR(gravity);
 	OBJECT_INIT_ACCESSOR(kinematic);
+	OBJECT_INIT_ACCESSOR(restitution);
 	OBJECT_INIT_ACCESSOR(friction);
 
 	OBJECT_INIT_FUNCTION(activate);
@@ -147,6 +148,13 @@ OBJECT_SETTER_START(RigidBody,kinematic)
 
 	self->body->setCollisionFlags(flags);
 	if(!state) self->body->activate();
+OBJECT_SETTER_END()
+
+OBJECT_GETTER_START(RigidBody,restitution)
+	result = Number::New(self->body->getRestitution());
+OBJECT_GETTER_END()
+OBJECT_SETTER_START(RigidBody,restitution)
+	self->body->setRestitution(value->ToNumber()->Value());
 OBJECT_SETTER_END()
 
 OBJECT_GETTER_START(RigidBody,friction)
