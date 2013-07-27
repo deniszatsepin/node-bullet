@@ -1,5 +1,6 @@
 #include "DiscreteDynamicsWorld.h"
 #include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
+#include <vector>
 
 extern ContactAddedCallback gContactAddedCallback;
 static bool CustomMaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1)
@@ -19,6 +20,7 @@ OBJECT_INIT_START(DiscreteDynamicsWorld)
 	OBJECT_INIT_FUNCTION(removeRigidBody);
 	OBJECT_INIT_FUNCTION(step);
 	OBJECT_INIT_FUNCTION(sweep);
+	OBJECT_INIT_FUNCTION(collisionNormals);
 OBJECT_INIT_END()
 
 OBJECT_NEW_START(DiscreteDynamicsWorld)
@@ -206,5 +208,33 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 		}
 	
 //	}
+OBJECT_FUNCTION_END()
+
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,collisionNormals)
+	RigidBody* rigidBody = RigidBody::Unwrap(args[0]);
+	btRigidBody* body = rigidBody->body;
+	btConvexShape* shape = (btConvexShape*)body->getCollisionShape();
+
+	int numManifolds = self->world->getDispatcher()->getNumManifolds();
+	std::vector<btVector3> normals;
+	for(int i=0; i<numManifolds; i++) {
+		btPersistentManifold* contactManifold = self->world->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = static_cast<const btCollisionObject*>(contactManifold->getBody0());
+		const btCollisionObject* obB = static_cast<const btCollisionObject*>(contactManifold->getBody1());
+		
+		if(obA != body) continue;
+		int numContacts = contactManifold->getNumContacts();
+		for(int j=0; j<numContacts; j++) {
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if(pt.getDistance() > 0) continue;
+			const btVector3& normalOnB = pt.m_normalWorldOnB;
+			normals.push_back(normalOnB);
+		}
+	}
+
+	Handle<Array> array = Array::New(normals.size());
+	for(int i = 0; i < normals.size(); i++)
+		array->Set(i, Util::vectorToObj(normals[i]));
+	result = array;
 OBJECT_FUNCTION_END()
 

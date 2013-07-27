@@ -34,6 +34,7 @@ extern "C" {
 
 		BoxShape::Initialize(target);
 		SphereShape::Initialize(target);
+		CapsuleShape::Initialize(target);
 		CylinderShape::Initialize(target);
 		ConvexHullShape::Initialize(target);
 		TriangleMeshShape::Initialize(target);
