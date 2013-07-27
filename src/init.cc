@@ -9,6 +9,7 @@
 
 #include "BoxShape.h"
 #include "SphereShape.h"
+#include "CapsuleShape.h"
 #include "CylinderShape.h"
 #include "ConvexHullShape.h"
 #include "TriangleMeshShape.h"

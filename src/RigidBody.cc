@@ -35,6 +35,8 @@ OBJECT_NEW_START(RigidBody)
 		shape = BoxShape::Unwrap(shapeHandle)->_btBoxShape;
 	} else if(SphereShape::HasInstance(shapeHandle)) {
 		shape = SphereShape::Unwrap(shapeHandle)->shape;
+	} else if(CapsuleShape::HasInstance(shapeHandle)) {
+		shape = CapsuleShape::Unwrap(shapeHandle)->shape;
 	} else if(CylinderShape::HasInstance(shapeHandle)) {
 		shape = CylinderShape::Unwrap(shapeHandle)->shape;
 	} else if(ConvexHullShape::HasInstance(shapeHandle)) {
