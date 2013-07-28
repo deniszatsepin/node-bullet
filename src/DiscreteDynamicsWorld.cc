@@ -210,13 +210,14 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,sweep)
 //	}
 OBJECT_FUNCTION_END()
 
-OBJECT_FUNCTION_START(DiscreteDynamicsWorld,collisionNormals)
+OBJECT_FUNCTION_START(DiscreteDynamicsWorld,collisions)
 	RigidBody* rigidBody = RigidBody::Unwrap(args[0]);
 	btRigidBody* body = rigidBody->body;
 	btConvexShape* shape = (btConvexShape*)body->getCollisionShape();
 
 	int numManifolds = self->world->getDispatcher()->getNumManifolds();
 	std::vector<btVector3> normals;
+	std::vector<btVector3> pos;
 	for(int i=0; i<numManifolds; i++) {
 		btPersistentManifold* contactManifold = self->world->getDispatcher()->getManifoldByIndexInternal(i);
 		const btCollisionObject* obA = static_cast<const btCollisionObject*>(contactManifold->getBody0());
@@ -227,14 +228,18 @@ OBJECT_FUNCTION_START(DiscreteDynamicsWorld,collisionNormals)
 		for(int j=0; j<numContacts; j++) {
 			btManifoldPoint& pt = contactManifold->getContactPoint(j);
 			if(pt.getDistance() > 0) continue;
-			const btVector3& normalOnB = pt.m_normalWorldOnB;
-			normals.push_back(normalOnB);
+			normals.push_back(pt.m_normalWorldOnB);
+			pos.push_back(pt.m_localPointA);
 		}
 	}
 
 	Handle<Array> array = Array::New(normals.size());
-	for(int i = 0; i < normals.size(); i++)
-		array->Set(i, Util::vectorToObj(normals[i]));
+	for(int i = 0; i < normals.size(); i++) {
+		Handle<Object> o = Object::New();
+		o->Set(String::New("normal"), Util::vectorToObj(normals[i]));
+		o->Set(String::New("pos"), Util::vectorToObj(pos[i]));
+		array->Set(i,o);
+	}
 	result = array;
 OBJECT_FUNCTION_END()
 
