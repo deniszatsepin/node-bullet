@@ -15,7 +15,7 @@ OBJECT_DEF_START(DiscreteDynamicsWorld)
 	OBJECT_DEF_FUNCTION(removeRigidBody);
 	OBJECT_DEF_FUNCTION(step);
 	OBJECT_DEF_FUNCTION(sweep);
-	OBJECT_DEF_FUNCTION(collisionNormals);
+	OBJECT_DEF_FUNCTION(collisions);
 
 	btDiscreteDynamicsWorld* world;
 

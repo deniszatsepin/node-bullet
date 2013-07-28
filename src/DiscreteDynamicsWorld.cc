@@ -20,7 +20,7 @@ OBJECT_INIT_START(DiscreteDynamicsWorld)
 	OBJECT_INIT_FUNCTION(removeRigidBody);
 	OBJECT_INIT_FUNCTION(step);
 	OBJECT_INIT_FUNCTION(sweep);
-	OBJECT_INIT_FUNCTION(collisionNormals);
+	OBJECT_INIT_FUNCTION(collisions);
 OBJECT_INIT_END()
 
 OBJECT_NEW_START(DiscreteDynamicsWorld)
