@@ -35,6 +35,9 @@ OBJECT_NEW_START(DiscreteDynamicsWorld)
 		SequentialImpulseConstraintSolver::Unwrap(self->_solver)->_btSequentialImpulseConstraintSolver,
 		DefaultCollisionConfiguration::Unwrap(self->_config)->_btDefaultCollisionConfiguration
 	);
+	
+	btContactSolverInfo& info = self->world->getSolverInfo();
+	info.m_splitImpulse = 1;
 
 	self->world->getDispatchInfo().m_allowedCcdPenetration=0.0001f;
 OBJECT_NEW_END()
