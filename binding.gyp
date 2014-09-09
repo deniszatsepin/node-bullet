@@ -6,6 +6,7 @@
 		"target_name": "bullet",
 		"sources": [ "<!@(ls -1 src/*.cc)", ],
 		'include_dirs': [
+			'<!(node -e "require(\'nan\')")',
 			'src',
 			'<(bullet_root)/src',
 		],

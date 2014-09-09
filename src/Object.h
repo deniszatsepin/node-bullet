@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Util.h"
+#include <nan.h>
 
 /*******************************
 	DEFINITION
@@ -13,7 +14,7 @@
 			static CLASS* Unwrap(Handle<Value> handle); \
 			static bool HasInstance(Handle<Value> handle); \
 			static void Initialize(Handle<Object> target); \
-			static Handle<Value> New(const Arguments &args); \
+			NAN_METHOD(New); \
 		private: \
 			~CLASS(); \
 		public:
@@ -39,10 +40,10 @@
 		return ObjectWrap::Unwrap<CLASS>(obj); \
 	} \
 	bool CLASS::HasInstance(Handle<Value> handle) { \
-		return CLASS::constructor->HasInstance(handle); \
+		return NanHasInstance(CLASS::constructor, handle); \
 	} \
 	void CLASS::Initialize(Handle<Object> target) { \
-		HandleScope scope; \
+	  NanScope();
 		Local<String> __classname = String::NewSymbol( #CLASS ); \
 		constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(CLASS::New)); \
 		constructor->InstanceTemplate()->SetInternalFieldCount(1); \
